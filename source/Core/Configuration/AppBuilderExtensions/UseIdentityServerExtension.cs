@@ -50,6 +50,23 @@ namespace Owin
         /// </exception>
         public static IAppBuilder UseIdentityServer(this IAppBuilder app, IdentityServerOptions options)
         {
+            AutofacResolver autofacResolver;
+            return UseIdentityServer(app, options, out autofacResolver);
+        }
+
+        /// <summary>
+        /// Extension method to configure IdentityServer in the hosting application.
+        /// </summary>
+        /// <param name="app">The application.</param>
+        /// <param name="options">The <see cref="IdentityServer3.Core.Configuration.IdentityServerOptions"/>.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// app
+        /// or
+        /// options
+        /// </exception>
+        public static IAppBuilder UseIdentityServer(this IAppBuilder app, IdentityServerOptions options, out AutofacResolver autofacResolver)
+        {
             if (app == null) throw new ArgumentNullException("app");
             if (options == null) throw new ArgumentNullException("options");
 
@@ -116,6 +133,8 @@ namespace Owin
                 // TODO -- perhaps use AsyncHelper instead?
                 DoStartupDiagnosticsAsync(options, eventSvc).Wait();
             }
+
+            autofacResolver = new AutofacResolver(container);
             
             return app;
         }

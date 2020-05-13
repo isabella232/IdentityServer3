@@ -142,6 +142,7 @@
     <Compile Include="Configuration\Hosting\ClientListCookie.cs" />
     <Compile Include="Configuration\InputLengthRestrictions.cs" />
     <Compile Include="Configuration\IAuthenticationSessionStoreProvider.cs" />
+    <Compile Include="Configuration\AutofacResolver.cs" />
     <Compile Include="Configuration\X509CertificateDataProtector.cs" />
     <Compile Include="Endpoints\Connect\IntrospectionEndpointController.cs" />
     <Compile Include="Endpoints\Connect\RevocationEndpointController.cs" />
