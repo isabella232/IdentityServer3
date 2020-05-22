@@ -78,5 +78,13 @@ namespace IdentityServer3.Core.Services
         /// <param name="model">The model.</param>
         /// <returns>Stream for the HTML</returns>
         Task<Stream> Error(ErrorViewModel model);
+
+        /// <summary>
+        /// Loads the HTML for the reset password page.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>Stream for the HTML</returns>
+        Task<Stream> ResetPassword(ResetPasswordViewModel model, SignInMessage message);
     }
 }

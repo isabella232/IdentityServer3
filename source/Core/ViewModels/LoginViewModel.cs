@@ -22,7 +22,7 @@ namespace IdentityServer3.Core.ViewModels
     /// <summary>
     /// Models that data needed to render the login page.
     /// </summary>
-    public class LoginViewModel : ErrorViewModel
+    public class LoginViewModel : LoginBaseViewModel
     {
         /// <summary>
         /// The URL to POST credentials to for local logins. Will be <c>null</c> if local login is disabled.
@@ -32,14 +32,6 @@ namespace IdentityServer3.Core.ViewModels
         /// The login URL.
         /// </value>
         public string LoginUrl { get; set; }
-
-        /// <summary>
-        /// The anti forgery values.
-        /// </summary>
-        /// <value>
-        /// The anti forgery.
-        /// </value>
-        public AntiForgeryTokenViewModel AntiForgery { get; set; }
 
         /// <summary>
         /// Indicates if "remember me" has been disabled and should not be displayed to the user.
@@ -58,14 +50,6 @@ namespace IdentityServer3.Core.ViewModels
         public bool RememberMe { get; set; }
 
         /// <summary>
-        /// The value to populate the username field.
-        /// </summary>
-        /// <value>
-        /// The username.
-        /// </value>
-        public string Username { get; set; }
-
-        /// <summary>
         /// List of external providers to display for home realm discover (HRD). 
         /// </summary>
         /// <value>
@@ -80,29 +64,5 @@ namespace IdentityServer3.Core.ViewModels
         /// The additional links.
         /// </value>
         public IEnumerable<LoginPageLink> AdditionalLinks { get; set; }
-
-        /// <summary>
-        /// The display name of the client.
-        /// </summary>
-        /// <value>
-        /// The name of the client.
-        /// </value>
-        public string ClientName { get; set; }
-
-        /// <summary>
-        /// The URL for more information about the client.
-        /// </summary>
-        /// <value>
-        /// The client URL.
-        /// </value>
-        public string ClientUrl { get; set; }
-
-        /// <summary>
-        /// The URL for the client's logo image.
-        /// </summary>
-        /// <value>
-        /// The client logo URL.
-        /// </value>
-        public string ClientLogoUrl { get; set; }
     }
 }

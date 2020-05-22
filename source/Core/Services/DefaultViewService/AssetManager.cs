@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace IdentityServer3.Core.Services.Default
 {
-    internal class AssetManager
+    public class AssetManager
     {
         public const string HttpAssetsNamespace = "IdentityServer3.Core.Services.DefaultViewService.HttpAssets";
         public const string FontAssetsNamespace = HttpAssetsNamespace + ".libs.bootstrap.fonts";

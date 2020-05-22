@@ -89,6 +89,36 @@ namespace IdentityServer3.Core.Endpoints
             this.antiForgeryToken = antiForgeryToken;
         }
 
+        [Route(Constants.RoutePaths.ResetPassword, Name = Constants.RouteNames.ResetPassword)]
+        [HttpGet]
+        public async Task<IHttpActionResult> Reset(string signin = null)
+        {
+            Logger.Info("Reset password page requested");
+
+            if (signin.IsMissing())
+            {
+                Logger.Info("No signin id passed");
+                return HandleNoSignin();
+            }
+
+            if (signin.Length > MaxSignInMessageLength)
+            {
+                Logger.Error("Signin parameter passed was larger than max length");
+                return RenderErrorPage();
+            }
+
+            var signInMessage = signInMessageCookie.Read(signin);
+            if (signInMessage == null)
+            {
+                Logger.Info("No cookie matching signin id found");
+                return HandleNoSignin();
+            }
+
+            Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+
+            return await RenderResetPasswordPage(signInMessage, signin);
+        }
+
         [Route(Constants.RoutePaths.Login, Name = Constants.RouteNames.Login)]
         [HttpGet]
         public async Task<IHttpActionResult> Login(string signin = null)
@@ -114,7 +144,7 @@ namespace IdentityServer3.Core.Endpoints
                 return HandleNoSignin();
             }
 
-            Logger.DebugFormat("signin message passed to login: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+            Logger.DebugFormat("Signin message passed to login: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
 
             var preAuthContext = new PreAuthenticationContext { SignInMessage = signInMessage };
             await userService.PreAuthenticateAsync(preAuthContext);
@@ -124,7 +154,7 @@ namespace IdentityServer3.Core.Endpoints
             {
                 if (authResult.IsError)
                 {
-                    Logger.WarnFormat("user service returned an error message: {0}", authResult.ErrorMessage);
+                    Logger.WarnFormat("User service returned an error message: {0}", authResult.ErrorMessage);
 
                     await eventService.RaisePreLoginFailureEventAsync(signin, signInMessage, authResult.ErrorMessage);
 
@@ -140,7 +170,7 @@ namespace IdentityServer3.Core.Endpoints
                     }
                 }
 
-                Logger.Info("user service returned a login result");
+                Logger.Info("User service returned a login result");
 
                 await eventService.RaisePreLoginSuccessEventAsync(signin, signInMessage, authResult);
 
@@ -871,6 +901,56 @@ namespace IdentityServer3.Core.Endpoints
             }
 
             return true;
+        }
+
+        private async Task<IHttpActionResult> RenderResetPasswordPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null)
+        {
+            if (message == null) throw new ArgumentNullException("message");
+
+            username = GetUserNameForLoginPage(message, username);
+
+            var isLocalLoginAllowedForClient = await IsLocalLoginAllowedForClient(message);
+            var isLocalLoginAllowed = isLocalLoginAllowedForClient && options.AuthenticationOptions.EnableLocalLogin;
+            var client = await clientStore.FindClientByIdAsync(message.ClientId);
+
+            if (errorMessage != null)
+            {
+                Logger.InfoFormat("Rendering reset password page with error message: {0}", errorMessage);
+            }
+            else
+            {
+                if (isLocalLoginAllowed == false)
+                {
+                    if (options.AuthenticationOptions.EnableLocalLogin)
+                    {
+                        Logger.Info("Local login disabled");
+                    }
+                    if (isLocalLoginAllowedForClient)
+                    {
+                        Logger.Info("Local login disabled for the client");
+                    }
+                }
+
+                Logger.Info("Rendering reset password page");
+            }
+
+            var resetPasswordModel = new ResetPasswordViewModel
+            {
+                RequestId = context.GetRequestId(),
+                SiteName = options.SiteName,
+                SiteUrl = Request.GetIdentityServerBaseUrl(),
+                ErrorMessage = errorMessage,
+                ResetPasswordUrl = isLocalLoginAllowed ? Url.Route(Constants.RouteNames.ResetPassword, new { signin = signInMessageId }) : null,
+                CurrentUser = context.GetCurrentUserDisplayName(),
+                LogoutUrl = context.GetIdentityServerLogoutUrl(),
+                AntiForgery = antiForgeryToken.GetAntiForgeryToken(),
+                Username = username,
+                ClientName = client != null ? client.ClientName : null,
+                ClientUrl = client != null ? client.ClientUri : null,
+                ClientLogoUrl = client != null ? client.LogoUri : null
+            };
+
+            return new ResetPasswordActionResult(viewService, resetPasswordModel, message);
         }
 
         private async Task<IHttpActionResult> RenderLoginPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null, bool rememberMe = false)

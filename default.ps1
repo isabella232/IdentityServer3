@@ -71,6 +71,7 @@ task ILMerge -depends Compile {
 
 	New-Item $dist_directory\lib\net45 -Type Directory
 	Invoke-Expression "$ilmerge_path /targetplatform:v4 /internalize /allowDup /target:library /out:$dist_directory\lib\net45\IdentityServer3.dll $input_dlls /keyfile:IdentityServer3.snk"
+	Copy-Item -Path $dist_directory\lib\net45\* -Destination $base_directory\..\eWay-3\Tools\IdentityServer3
 }
 
 task CreateNuGetPackage -depends ILMerge {
