@@ -19,16 +19,8 @@ namespace IdentityServer3.Core.ViewModels
     /// <summary>
     /// Models the inputs to be submitted to the local login endpoint.
     /// </summary>
-    public class LoginCredentials
+    public class LoginCredentials : Login
     {
-        /// <summary>
-        /// Gets or sets the username.
-        /// </summary>
-        /// <value>
-        /// The username.
-        /// </value>
-        public string Username { get; set; }
-        
         /// <summary>
         /// Gets or sets the password.
         /// </summary>

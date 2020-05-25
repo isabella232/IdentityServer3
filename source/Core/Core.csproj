@@ -214,12 +214,14 @@
     <Compile Include="Logging\NoopLogProvider.cs" />
     <Compile Include="Models\ClientPermissionDescription.cs" />
     <Compile Include="Models\Contexts\ExternalAuthenticationContext.cs" />
+    <Compile Include="Models\Contexts\ResetPasswordContext.cs" />
     <Compile Include="Models\ParsedSecret.cs" />
     <Compile Include="Models\Contexts\PostAuthenticationContext.cs" />
     <Compile Include="Models\Contexts\ProfileDataRequestContext.cs" />
     <Compile Include="Models\IsActiveContext.cs" />
     <Compile Include="Models\Contexts\LocalAuthenticationContext.cs" />
     <Compile Include="Models\Contexts\PreAuthenticationContext.cs" />
+    <Compile Include="Models\ResetPasswordResult.cs" />
     <Compile Include="Models\RsaPublicKeyJwk.cs" />
     <Compile Include="Models\Secret.cs" />
     <Compile Include="Models\AuthenticatedLogin.cs" />
@@ -324,6 +326,7 @@
     <Compile Include="Validation\TokenRevocationRequestValidator.cs" />
     <Compile Include="Validation\ValidationResult.cs" />
     <Compile Include="ViewModels\AuthorizeResponseViewModel.cs" />
+    <Compile Include="ViewModels\Login.cs" />
     <Compile Include="ViewModels\LoginBaseViewModel.cs" />
     <Compile Include="ViewModels\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\RevokeClientPermission.cs" />

@@ -119,6 +119,97 @@ namespace IdentityServer3.Core.Endpoints
             return await RenderResetPasswordPage(signInMessage, signin);
         }
 
+        [Route(Constants.RoutePaths.ResetPassword)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IHttpActionResult> Reset(string signin, Login model)
+        {
+            Logger.Info("Reset password page submitted");
+
+            if (this.options.AuthenticationOptions.EnableLocalLogin == false)
+            {
+                Logger.Warn("EnableLocalLogin disabled -- returning 405 MethodNotAllowed");
+                return StatusCode(HttpStatusCode.MethodNotAllowed);
+            }
+
+            if (signin.IsMissing())
+            {
+                Logger.Info("No signin id passed");
+                return HandleNoSignin();
+            }
+
+            if (signin.Length > MaxSignInMessageLength)
+            {
+                Logger.Error("Signin parameter passed was larger than max length");
+                return RenderErrorPage();
+            }
+
+            var signInMessage = signInMessageCookie.Read(signin);
+            if (signInMessage == null)
+            {
+                Logger.Info("No cookie matching signin id found");
+                return HandleNoSignin();
+            }
+
+            if (!(await IsLocalLoginAllowedForClient(signInMessage)))
+            {
+                Logger.ErrorFormat("Login not allowed for client {0}", signInMessage.ClientId);
+                return RenderErrorPage();
+            }
+
+            if (model == null)
+            {
+                Logger.Error("No data submitted");
+                return await RenderLoginPage(signInMessage, signin, localizationService.GetMessage(MessageIds.InvalidUsernameOrPassword));
+            }
+
+            if (String.IsNullOrWhiteSpace(model.Username))
+            {
+                ModelState.AddModelError("Username", localizationService.GetMessage(MessageIds.UsernameRequired));
+            }
+
+            if (!ModelState.IsValid)
+            {
+                Logger.Warn("Validation error: Username missing");
+                return await RenderResetPasswordPage(signInMessage, signin, ModelState.GetError(), model.Username);
+            }
+
+            if (model.Username.Length > options.InputLengthRestrictions.UserName)
+            {
+                Logger.Error("Username submitted beyond allowed length");
+                return await RenderResetPasswordPage(signInMessage, signin);
+            }
+
+            var resetContext = new ResetPasswordContext { SignInMessage = signInMessage, UserName = model.Username };
+            await userService.ResetPasswordAsync(resetContext);
+
+            var resetResult = resetContext.ResetPasswordResult;
+            if (resetResult == null)
+            {
+                Logger.WarnFormat("User service indicated incorrect username: {0}", model.Username);
+
+                var errorMessage = localizationService.GetMessage(MessageIds.InvalidUsernameOrPassword);
+                await eventService.RaiseResetPasswordFailureEventAsync(model.Username, signin, signInMessage, errorMessage);
+
+                return await RenderResetPasswordPage(signInMessage, signin, errorMessage, model.Username);
+            }
+
+            if (resetResult.IsError)
+            {
+                Logger.WarnFormat("User service returned an error message: {0}", resetResult.ErrorMessage);
+
+                await eventService.RaiseResetPasswordFailureEventAsync(model.Username, signin, signInMessage, resetResult.ErrorMessage);
+
+                return await RenderResetPasswordPage(signInMessage, signin, resetResult.ErrorMessage, model.Username);
+            }
+
+            Logger.InfoFormat("Reset password finished successfully for user '{0}'", model.Username);
+
+            await eventService.RaiseResetPasswordSuccessEventAsync(model.Username, signin, signInMessage);
+
+            return await RenderResetPasswordPage(signInMessage, signin, resetResult.ErrorMessage, model.Username, true);
+        }
+
         [Route(Constants.RoutePaths.Login, Name = Constants.RouteNames.Login)]
         [HttpGet]
         public async Task<IHttpActionResult> Login(string signin = null)
@@ -903,7 +994,7 @@ namespace IdentityServer3.Core.Endpoints
             return true;
         }
 
-        private async Task<IHttpActionResult> RenderResetPasswordPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null)
+        private async Task<IHttpActionResult> RenderResetPasswordPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null, bool? isSuccessfulReset = null)
         {
             if (message == null) throw new ArgumentNullException("message");
 
@@ -947,7 +1038,8 @@ namespace IdentityServer3.Core.Endpoints
                 Username = username,
                 ClientName = client != null ? client.ClientName : null,
                 ClientUrl = client != null ? client.ClientUri : null,
-                ClientLogoUrl = client != null ? client.LogoUri : null
+                ClientLogoUrl = client != null ? client.LogoUri : null,
+                IsSuccessfulReset = isSuccessfulReset
             };
 
             return new ResetPasswordActionResult(viewService, resetPasswordModel, message);

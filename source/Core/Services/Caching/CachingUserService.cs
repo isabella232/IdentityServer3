@@ -91,7 +91,17 @@ namespace IdentityServer3.Core.Services.Caching
         {
             return inner.PostAuthenticateAsync(context);
         }
-        
+
+        /// <summary>
+        /// This method is called when the user asks for password to be reset.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public Task ResetPasswordAsync(ResetPasswordContext context)
+        {
+            return inner.ResetPasswordAsync(context);
+        }
+
         /// <summary>
         /// This method gets called when the user signs out.
         /// </summary>

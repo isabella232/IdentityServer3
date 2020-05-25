@@ -153,6 +153,12 @@
   <data name="PreLoginSuccess" xml:space="preserve">
     <value>Pre-Login Success</value>
   </data>
+  <data name="ResetPasswordFailure" xml:space="preserve">
+    <value>Reset Password Failure</value>
+  </data>
+  <data name="ResetPasswordSuccess" xml:space="preserve">
+    <value>Reset Password Success</value>
+  </data>
   <data name="ResourceOwnerFlowLoginFailure" xml:space="preserve">
     <value>Resource Owner Password Flow Login Failure</value>
   </data>

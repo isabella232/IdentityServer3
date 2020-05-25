@@ -68,5 +68,10 @@ namespace IdentityServer3.Tests.Validation
         {
             return Task.FromResult(0);
         }
+
+        public Task ResetPasswordAsync(ResetPasswordContext context)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

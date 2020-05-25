@@ -16,5 +16,10 @@ namespace IdentityServer3.Core.ViewModels
         /// The reset password URL.
         /// </value>
         public string ResetPasswordUrl { get; set; }
+
+        /// <summary>
+        /// Indicates that the password reset request was successful.
+        /// </summary>
+        public bool? IsSuccessfulReset { get; set; }
     }
 }

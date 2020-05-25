@@ -75,5 +75,12 @@ namespace IdentityServer3.Core.Services
         /// <param name="context">The context.</param>
         /// <returns></returns>
         Task IsActiveAsync(IsActiveContext context);
+
+        /// <summary>
+        /// This method is called when the user asks for password to be reset.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        Task ResetPasswordAsync(ResetPasswordContext context);
     }
 }
