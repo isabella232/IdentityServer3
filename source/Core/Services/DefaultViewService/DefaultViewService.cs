@@ -61,6 +61,10 @@ namespace IdentityServer3.Core.Services.Default
         /// </summary>
         public const string ResetPasswordView = "reset";
         /// <summary>
+        /// The login view
+        /// </summary>
+        public const string ResetPasswordCallbackView = "doreset";
+        /// <summary>
         /// The authorize response view
         /// </summary>
         public const string AuthorizeResponseView = "authorizeresponse";
@@ -116,6 +120,19 @@ namespace IdentityServer3.Core.Services.Default
         public virtual Task<Stream> ResetPassword(ResetPasswordViewModel model, SignInMessage message)
         {
             return Render(model, ResetPasswordView);
+        }
+
+        /// <summary>
+        /// Loads the HTML for the reset password callback page.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="token">The token.</param>
+        /// <returns>
+        /// Stream for the HTML
+        /// </returns>
+        public virtual Task<Stream> ResetPasswordCallback(ResetPasswordViewModel model, string token)
+        {
+            return Render(model, ResetPasswordCallbackView);
         }
 
         /// <summary>

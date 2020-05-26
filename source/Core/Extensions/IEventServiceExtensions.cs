@@ -140,6 +140,29 @@ namespace IdentityServer3.Core.Extensions
             await events.RaiseEventAsync(evt);
         }
 
+        public static async Task RaiseResetPasswordCallbackSuccessEventAsync(this IEventService events)
+        {
+            var evt = new Event<LocalLoginDetails>(
+                EventConstants.Categories.Authentication,
+                Resources.Events.ResetPasswordSuccess,
+                EventTypes.Success,
+                EventConstants.Ids.ResetPasswordCallbackSuccess);
+
+            await events.RaiseEventAsync(evt);
+        }
+
+        public static async Task RaiseResetPasswordCallbackFailureEventAsync(this IEventService events, string error)
+        {
+            var evt = new Event<LocalLoginDetails>(
+                EventConstants.Categories.Authentication,
+                Resources.Events.ResetPasswordFailure,
+                EventTypes.Failure,
+                EventConstants.Ids.ResetPasswordCallbackFailure,
+                error);
+
+            await events.RaiseEventAsync(evt);
+        }
+
         public static async Task RaiseExternalLoginSuccessEventAsync(this IEventService events, 
             ExternalIdentity externalIdentity, string signInMessageId, SignInMessage signInMessage, AuthenticateResult authResult)
         {

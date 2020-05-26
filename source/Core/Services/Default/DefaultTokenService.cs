@@ -210,13 +210,18 @@ namespace IdentityServer3.Core.Services.Default
                 claims.Add(new Claim(Constants.ClaimTypes.Confirmation, request.ProofKey, Constants.ClaimValueTypes.Json));
             }
 
+            return CreateAccessToken(request.Client, claims);
+        }
+
+        protected Token CreateAccessToken(Client client, List<Claim> claims)
+        {
             var token = new Token(Constants.TokenTypes.AccessToken)
             {
                 Audience = string.Format(Constants.AccessTokenAudience, IssuerUri.EnsureTrailingSlash()),
                 Issuer = IssuerUri,
-                Lifetime = request.Client.AccessTokenLifetime,
+                Lifetime = client.AccessTokenLifetime,
                 Claims = claims.Distinct(new ClaimComparer()).ToList(),
-                Client = request.Client
+                Client = client
             };
 
             return token;

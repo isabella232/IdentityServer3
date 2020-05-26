@@ -106,5 +106,15 @@ namespace IdentityServer3.Core.Services.Default
         {
             return Task.FromResult(0);
         }
+
+        /// <summary>
+        /// This method is called when the user provides new password.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public Task ResetPasswordAsync(ResetPasswordCallbackContext context)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

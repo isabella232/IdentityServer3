@@ -89,6 +89,90 @@ namespace IdentityServer3.Core.Endpoints
             this.antiForgeryToken = antiForgeryToken;
         }
 
+        [Route(Constants.RoutePaths.ResetPasswordCallback, Name = Constants.RouteNames.ResetPasswordCallback)]
+        [HttpGet]
+        public async Task<IHttpActionResult> ResetCallback(string token = null)
+        {
+            Logger.Info("Reset password callback page requested");
+
+            if (token.IsMissing())
+            {
+                Logger.Info("No token passed");
+                return RenderErrorPage();
+            }
+
+            Logger.DebugFormat("Token passed to reset password callback: {0}", token);
+
+            return await RenderResetPasswordCallbackPage(token);
+        }
+
+        [Route(Constants.RoutePaths.ResetPasswordCallback)]
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IHttpActionResult> ResetCallback(string token, ResetCredentials model)
+        {
+            Logger.Info("Reset password page submitted");
+
+            if (this.options.AuthenticationOptions.EnableLocalLogin == false)
+            {
+                Logger.Warn("EnableLocalLogin disabled -- returning 405 MethodNotAllowed");
+                return StatusCode(HttpStatusCode.MethodNotAllowed);
+            }
+
+            if (token.IsMissing())
+            {
+                Logger.Info("No token passed");
+                return RenderErrorPage();
+            }
+
+            if (model == null)
+            {
+                Logger.Error("No data submitted");
+                return await RenderResetPasswordCallbackPage(token, localizationService.GetMessage(MessageIds.MissingToken));
+            }
+
+            var resetContext = new ResetPasswordCallbackContext { Token = token, Password = model.Password, ConfirmedPassword = model.ConfirmedPassword };
+            await userService.ResetPasswordAsync(resetContext);
+
+            var resetResult = resetContext.ResetPasswordResult;
+            if (resetResult == null)
+            {
+                string error = "No result provided";
+
+                Logger.WarnFormat("User service returned no result");
+
+                await eventService.RaiseResetPasswordCallbackFailureEventAsync(error);
+
+                return await RenderResetPasswordCallbackPage(token, error);
+            }
+
+            if (resetResult.IsError)
+            {
+                Logger.WarnFormat("User service returned invalid result: '{0}'", resetResult.ErrorMessage);
+
+                await eventService.RaiseResetPasswordCallbackFailureEventAsync(resetResult.ErrorMessage);
+
+                return await RenderResetPasswordCallbackPage(token, resetResult.ErrorMessage);
+            }
+
+            if (string.IsNullOrEmpty(resetContext.UserName))
+            {
+                Logger.WarnFormat("User service returned no username");
+
+                string error = "No username provided";
+
+                await eventService.RaiseResetPasswordCallbackFailureEventAsync(error);
+
+                return await RenderResetPasswordCallbackPage(token, error);
+            }
+
+            Logger.InfoFormat("Reset password finished successfully for user '{0}'", resetContext.UserName);
+
+            await eventService.RaiseResetPasswordCallbackSuccessEventAsync();
+
+            return await RenderResetPasswordCallbackPage(token, resetResult.ErrorMessage, resetContext.UserName, true);
+        }
+
         [Route(Constants.RoutePaths.ResetPassword, Name = Constants.RouteNames.ResetPassword)]
         [HttpGet]
         public async Task<IHttpActionResult> Reset(string signin = null)
@@ -160,7 +244,7 @@ namespace IdentityServer3.Core.Endpoints
             if (model == null)
             {
                 Logger.Error("No data submitted");
-                return await RenderLoginPage(signInMessage, signin, localizationService.GetMessage(MessageIds.InvalidUsernameOrPassword));
+                return await RenderResetPasswordPage(signInMessage, signin, localizationService.GetMessage(MessageIds.InvalidUsernameOrPassword));
             }
 
             if (String.IsNullOrWhiteSpace(model.Username))
@@ -483,7 +567,7 @@ namespace IdentityServer3.Core.Endpoints
             var user = await context.GetIdentityFromExternalProvider();
             if (user == null)
             {
-                Logger.Error("no identity from external identity provider");
+                Logger.Error("No identity from external identity provider");
                 return await RenderLoginPage(signInMessage, signInId, localizationService.GetMessage(MessageIds.NoMatchingExternalAccount));
             }
 
@@ -491,11 +575,11 @@ namespace IdentityServer3.Core.Endpoints
             if (externalIdentity == null)
             {
                 var claims = user.Claims.Select(x => new { x.Type, x.Value });
-                Logger.ErrorFormat("no subject or unique identifier claims from external identity provider. Claims provided:\r\n{0}", LogSerializer.Serialize(claims));
+                Logger.ErrorFormat("No subject or unique identifier claims from external identity provider. Claims provided:\r\n{0}", LogSerializer.Serialize(claims));
                 return await RenderLoginPage(signInMessage, signInId, localizationService.GetMessage(MessageIds.NoMatchingExternalAccount));
             }
 
-            Logger.InfoFormat("external user provider: {0}, provider ID: {1}", externalIdentity.Provider, externalIdentity.ProviderId);
+            Logger.InfoFormat("External user provider: {0}, provider ID: {1}", externalIdentity.Provider, externalIdentity.ProviderId);
 
             var externalContext = new ExternalAuthenticationContext
             {
@@ -508,7 +592,7 @@ namespace IdentityServer3.Core.Endpoints
             var authResult = externalContext.AuthenticateResult;
             if (authResult == null)
             {
-                Logger.Warn("user service failed to authenticate external identity");
+                Logger.Warn("User service failed to authenticate external identity");
                 
                 var msg = localizationService.GetMessage(MessageIds.NoMatchingExternalAccount);
                 await eventService.RaiseExternalLoginFailureEventAsync(externalIdentity, signInId, signInMessage, msg);
@@ -518,7 +602,7 @@ namespace IdentityServer3.Core.Endpoints
 
             if (authResult.IsError)
             {
-                Logger.WarnFormat("user service returned error message: {0}", authResult.ErrorMessage);
+                Logger.WarnFormat("User service returned error message: {0}", authResult.ErrorMessage);
 
                 await eventService.RaiseExternalLoginFailureEventAsync(externalIdentity, signInId, signInMessage, authResult.ErrorMessage);
                 
@@ -992,6 +1076,44 @@ namespace IdentityServer3.Core.Endpoints
             }
 
             return true;
+        }
+
+        private async Task<IHttpActionResult> RenderResetPasswordCallbackPage(string token, string errorMessage = null, string username = null, bool? isSuccessfulReset = null)
+        {
+            var isLocalLoginAllowed = options.AuthenticationOptions.EnableLocalLogin;
+
+            if (errorMessage != null)
+            {
+                Logger.InfoFormat("Rendering reset password callback page with error message: {0}", errorMessage);
+            }
+            else
+            {
+                if (isLocalLoginAllowed == false)
+                {
+                    if (options.AuthenticationOptions.EnableLocalLogin)
+                    {
+                        Logger.Info("Local login disabled");
+                    }
+                }
+
+                Logger.Info("Rendering reset password page");
+            }
+
+            var resetPasswordModel = new ResetPasswordViewModel
+            {
+                RequestId = context.GetRequestId(),
+                SiteName = options.SiteName,
+                SiteUrl = Request.GetIdentityServerBaseUrl(),
+                ErrorMessage = errorMessage,
+                ResetPasswordUrl = isLocalLoginAllowed ? Url.Route(Constants.RouteNames.ResetPasswordCallback, new { token }) : null,
+                CurrentUser = context.GetCurrentUserDisplayName(),
+                LogoutUrl = context.GetIdentityServerLogoutUrl(),
+                AntiForgery = antiForgeryToken.GetAntiForgeryToken(),
+                Username = username,
+                IsSuccessfulReset = isSuccessfulReset
+            };
+
+            return new ResetPasswordCallbackActionResult(viewService, resetPasswordModel, token);
         }
 
         private async Task<IHttpActionResult> RenderResetPasswordPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null, bool? isSuccessfulReset = null)

@@ -103,6 +103,16 @@ namespace IdentityServer3.Core.Services.Caching
         }
 
         /// <summary>
+        /// This method is called when the user provides new password.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public Task ResetPasswordAsync(ResetPasswordCallbackContext context)
+        {
+            return inner.ResetPasswordAsync(context);
+        }
+
+        /// <summary>
         /// This method gets called when the user signs out.
         /// </summary>
         /// <param name="context">The context.</param>

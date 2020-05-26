@@ -15,10 +15,5 @@ namespace IdentityServer3.Core.ViewModels
         /// The username.
         /// </value>
         public string Username { get; set; }
-
-        /// <summary>
-        /// Indicates that the password reset request was successful.
-        /// </summary>
-        public bool IsSuccessfulReset { get; set; }
     }
 }

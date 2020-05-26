@@ -214,6 +214,7 @@
     <Compile Include="Logging\NoopLogProvider.cs" />
     <Compile Include="Models\ClientPermissionDescription.cs" />
     <Compile Include="Models\Contexts\ExternalAuthenticationContext.cs" />
+    <Compile Include="Models\Contexts\ResetPasswordCallbackContext.cs" />
     <Compile Include="Models\Contexts\ResetPasswordContext.cs" />
     <Compile Include="Models\ParsedSecret.cs" />
     <Compile Include="Models\Contexts\PostAuthenticationContext.cs" />
@@ -237,6 +238,7 @@
     <Compile Include="ResponseHandling\IntrospectionResponseGenerator.cs" />
     <Compile Include="Results\CheckSessionResult.cs" />
     <Compile Include="Results\ResetPasswordActionResult.cs" />
+    <Compile Include="Results\ResetPasswordCallbackActionResult.cs" />
     <Compile Include="Results\RevocationErrorResult.cs" />
     <Compile Include="Results\IntrospectionResult.cs" />
     <Compile Include="Results\WelcomeActionResult.cs" />
@@ -328,6 +330,7 @@
     <Compile Include="ViewModels\AuthorizeResponseViewModel.cs" />
     <Compile Include="ViewModels\Login.cs" />
     <Compile Include="ViewModels\LoginBaseViewModel.cs" />
+    <Compile Include="ViewModels\ResetCredentials.cs" />
     <Compile Include="ViewModels\ResetPasswordViewModel.cs" />
     <Compile Include="ViewModels\RevokeClientPermission.cs" />
     <Compile Include="ResponseHandling\EndSessionResponseGenerator.cs" />
