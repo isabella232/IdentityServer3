@@ -73,6 +73,7 @@ namespace IdentityServer3.Core.ResponseHandling
             if (request.LoginHint.IsPresent())
             {
                 _signIn.LoginHint = request.LoginHint;
+                _signIn.LoginForced = request.LoginForced;
             }
 
             // process acr values

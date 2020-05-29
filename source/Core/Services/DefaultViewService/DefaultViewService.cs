@@ -181,7 +181,7 @@ namespace IdentityServer3.Core.Services.Default
         /// <returns>
         /// Stream for the HTML
         /// </returns>
-        public Task<Stream> ClientPermissions(ClientPermissionsViewModel model)
+        public virtual Task<Stream> ClientPermissions(ClientPermissionsViewModel model)
         {
             return Render(model, ClientPermissionsView);
         }

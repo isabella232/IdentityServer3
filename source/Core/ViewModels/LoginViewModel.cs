@@ -37,7 +37,7 @@ namespace IdentityServer3.Core.ViewModels
         /// Indicates if "remember me" has been disabled and should not be displayed to the user.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [allow remember me]; otherwise, <c>false</c>.
+        ///   <c>true</c> if Remember Me is allowed; otherwise, <c>false</c>.
         /// </value>
         public bool AllowRememberMe { get; set; }
 
@@ -45,9 +45,14 @@ namespace IdentityServer3.Core.ViewModels
         /// The value to populate the "remember me" field.
         /// </summary>
         /// <value>
-        ///   <c>true</c> if [remember me]; otherwise, <c>false</c>.
+        ///   <c>true</c> if Remember Me is checked; otherwise, <c>false</c>.
         /// </value>
         public bool RememberMe { get; set; }
+
+        /// <summary>
+        /// Value indicating whether user name should be readonly.
+        /// </summary>
+        public bool UsernameReadonly { get; set; }
 
         /// <summary>
         /// List of external providers to display for home realm discover (HRD). 

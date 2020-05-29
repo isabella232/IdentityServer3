@@ -73,6 +73,7 @@ namespace IdentityServer3.Core
             public const string UiLocales           = "ui_locales";
             public const string IdTokenHint         = "id_token_hint";
             public const string LoginHint           = "login_hint";
+            public const string LoginForced         = "login_forced";
             public const string AcrValues           = "acr_values";
             public const string CodeChallenge       = "code_challenge";
             public const string CodeChallengeMethod = "code_challenge_method";

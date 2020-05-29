@@ -132,6 +132,7 @@ namespace IdentityServer3.Tests.Endpoints
 
             var model = resp.GetModel<LoginViewModel>();
             model.Username.Should().Be("test");
+            model.UsernameReadonly.Should().BeFalse();
         }
 
         [Fact]
@@ -145,7 +146,7 @@ namespace IdentityServer3.Tests.Endpoints
             var resp = GetLoginPage(msg);
 
             var model = resp.GetModel<LoginViewModel>();
-            model.Username.Should().BeNull(); ;
+            model.Username.Should().BeNull();
         }
 
         [Fact]
@@ -186,6 +187,7 @@ namespace IdentityServer3.Tests.Endpoints
             resp = PostForm(model.LoginUrl, new LoginCredentials { Username = "alice", Password = "jdfhjkdf" });
             model = resp.GetModel<LoginViewModel>();
             model.Username.Should().Be("alice");
+            model.UsernameReadonly.Should().BeFalse();
         }
 
         [Fact]

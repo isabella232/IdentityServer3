@@ -1171,7 +1171,8 @@ namespace IdentityServer3.Core.Endpoints
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            username = GetUserNameForLoginPage(message, username);
+            bool userNameForced;
+            username = GetUserNameForLoginPage(message, username, out userNameForced);
 
             var isLocalLoginAllowedForClient = await IsLocalLoginAllowedForClient(message);
             var isLocalLoginAllowed = isLocalLoginAllowedForClient && options.AuthenticationOptions.EnableLocalLogin;
@@ -1244,6 +1245,7 @@ namespace IdentityServer3.Core.Endpoints
                 LogoutUrl = context.GetIdentityServerLogoutUrl(),
                 AntiForgery = antiForgeryToken.GetAntiForgeryToken(),
                 Username = username,
+                UsernameReadonly = userNameForced,
                 ClientName = client != null ? client.ClientName : null,
                 ClientUrl = client != null ? client.ClientUri : null,
                 ClientLogoUrl = client != null ? client.LogoUri : null
@@ -1254,12 +1256,21 @@ namespace IdentityServer3.Core.Endpoints
 
         private string GetUserNameForLoginPage(SignInMessage message, string username)
         {
+            bool usernameForced;
+
+            return this.GetUserNameForLoginPage(message, username, out usernameForced);
+        }
+
+        private string GetUserNameForLoginPage(SignInMessage message, string username, out bool usernameForced)
+        {
+            usernameForced = false;
             if (username.IsMissing() && message.LoginHint.IsPresent())
             {
                 if (options.AuthenticationOptions.EnableLoginHint)
                 {
                     Logger.InfoFormat("Using LoginHint for username: {0}", message.LoginHint);
                     username = message.LoginHint;
+                    usernameForced = message.LoginForced;
                 }
                 else
                 {

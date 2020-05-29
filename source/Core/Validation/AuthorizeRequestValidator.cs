@@ -509,6 +509,22 @@ namespace IdentityServer3.Core.Validation
             }
 
             //////////////////////////////////////////////////////////
+            // check login_forced
+            //////////////////////////////////////////////////////////
+            var loginForced = request.Raw.Get(Constants.AuthorizeRequest.LoginForced);
+            if (loginForced.IsPresent())
+            {
+                bool loginForcedResult;
+                if (!bool.TryParse(loginForced, out loginForcedResult))
+                {
+                    LogError("Unable to parse login_forced", request);
+                    return Invalid(request, ErrorTypes.Client);
+                }
+
+                request.LoginForced = loginForcedResult;
+            }
+
+            //////////////////////////////////////////////////////////
             // check acr_values
             //////////////////////////////////////////////////////////
             var acrValues = request.Raw.Get(Constants.AuthorizeRequest.AcrValues);

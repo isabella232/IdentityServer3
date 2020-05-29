@@ -67,7 +67,12 @@ namespace IdentityServer3.Core.Models
         /// The LoginHint.
         /// </value>
         public string LoginHint { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets value indicating whether user is able to change login hint.
+        /// </summary>
+        public bool LoginForced { get; set; }
+
         /// <summary>
         /// The display mode passed from the authorization request.
         /// </summary>

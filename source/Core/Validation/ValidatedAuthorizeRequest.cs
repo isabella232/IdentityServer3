@@ -169,6 +169,11 @@ namespace IdentityServer3.Core.Validation
         public string LoginHint { get; set; }
 
         /// <summary>
+        /// Gets or sets value indicating whether user is able to change login hint.
+        /// </summary>
+        public bool LoginForced { get; set; }
+
+        /// <summary>
         /// Gets or sets the code challenge
         /// </summary>
         /// <value>
