@@ -21,5 +21,10 @@ namespace IdentityServer3.Core.ViewModels
         /// Indicates that the password reset request was successful.
         /// </summary>
         public bool? IsSuccessfulReset { get; set; }
+
+        /// <summary>
+        /// Indicates whether the reset request came from sign in page.
+        /// </summary>
+        public bool IsFromSignIn { get; set; }
     }
 }

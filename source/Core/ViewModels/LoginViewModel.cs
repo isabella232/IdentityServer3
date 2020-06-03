@@ -25,15 +25,6 @@ namespace IdentityServer3.Core.ViewModels
     public class LoginViewModel : LoginBaseViewModel
     {
         /// <summary>
-        /// The URL to POST credentials to for local logins. Will be <c>null</c> if local login is disabled.
-        /// <see cref="LoginCredentials"/> for the model for the submitted data.
-        /// </summary>
-        /// <value>
-        /// The login URL.
-        /// </value>
-        public string LoginUrl { get; set; }
-
-        /// <summary>
         /// Indicates if "remember me" has been disabled and should not be displayed to the user.
         /// </summary>
         /// <value>
