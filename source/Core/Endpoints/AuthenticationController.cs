@@ -473,7 +473,7 @@ namespace IdentityServer3.Core.Endpoints
             await eventService.RaiseResetPasswordSuccessEventAsync(model.Username, signin, signInMessage);
 
             var url = Request.GetOwinContext().GetIdentityServerBaseUrl().EnsureTrailingSlash() +
-                Constants.RoutePaths.ResetPasswordVerify + "?signin=" + signin + "&username=" + model.Username;
+                Constants.RoutePaths.ResetPasswordVerify + "?signin=" + signin;
 
             return Redirect(url);
         }
@@ -1288,6 +1288,7 @@ namespace IdentityServer3.Core.Endpoints
                 RequestId = context.GetRequestId(),
                 SiteName = options.SiteName,
                 SiteUrl = Request.GetIdentityServerBaseUrl(),
+                CurrentUrl = context.Request.Uri.AbsoluteUri,
                 ErrorMessage = errorMessage,
                 ResetPasswordUrl = isLocalLoginAllowed ? Url.Route(Constants.RouteNames.ResetPasswordCallback, new { token, signin = signInMessageId }) : null,
                 CurrentUser = context.GetCurrentUserDisplayName(),
@@ -1336,6 +1337,7 @@ namespace IdentityServer3.Core.Endpoints
                 RequestId = context.GetRequestId(),
                 SiteName = options.SiteName,
                 SiteUrl = Request.GetIdentityServerBaseUrl(),
+                CurrentUrl = context.Request.Uri.AbsoluteUri,
                 ErrorMessage = errorMessage,
                 ResetPasswordUrl = isLocalLoginAllowed ? Url.Route(Constants.RouteNames.ResetPasswordVerify, new { signin = signInMessageId }) : null,
                 LoginUrl = isLocalLoginAllowed ? Url.Route(Constants.RouteNames.Login, new { signin = signInMessageId }) : null,
@@ -1388,6 +1390,7 @@ namespace IdentityServer3.Core.Endpoints
                 RequestId = context.GetRequestId(),
                 SiteName = options.SiteName,
                 SiteUrl = Request.GetIdentityServerBaseUrl(),
+                CurrentUrl = context.Request.Uri.AbsoluteUri,
                 ErrorMessage = errorMessage,
                 ResetPasswordUrl = isLocalLoginAllowed ? Url.Route(Constants.RouteNames.ResetPassword, new { signin = signInMessageId }) : null,
                 LoginUrl = isLocalLoginAllowed ? Url.Route(Constants.RouteNames.Login, new { signin = signInMessageId }) : null,
@@ -1472,6 +1475,7 @@ namespace IdentityServer3.Core.Endpoints
                 RequestId = context.GetRequestId(),
                 SiteName = options.SiteName,
                 SiteUrl = Request.GetIdentityServerBaseUrl(),
+                CurrentUrl = context.Request.Uri.AbsoluteUri,
                 ExternalProviders = visibleLinks,
                 AdditionalLinks = loginPageLinks,
                 ErrorMessage = errorMessage,
@@ -1536,6 +1540,7 @@ namespace IdentityServer3.Core.Endpoints
             {
                 SiteName = options.SiteName,
                 SiteUrl = context.GetIdentityServerBaseUrl(),
+                CurrentUrl = context.Request.Uri.AbsoluteUri,
                 CurrentUser = context.GetCurrentUserDisplayName(),
                 LogoutUrl = logout_url,
                 AntiForgery = antiForgeryToken.GetAntiForgeryToken(),
@@ -1560,6 +1565,7 @@ namespace IdentityServer3.Core.Endpoints
             {
                 SiteName = options.SiteName,
                 SiteUrl = baseUrl,
+                CurrentUrl = context.Request.Uri.AbsoluteUri,
                 IFrameUrls = iframeUrls,
                 ClientName = clientName,
                 RedirectUrl = redirectUrl,
@@ -1577,6 +1583,7 @@ namespace IdentityServer3.Core.Endpoints
                 RequestId = context.GetRequestId(),
                 SiteName = this.options.SiteName,
                 SiteUrl = context.GetIdentityServerBaseUrl(),
+                CurrentUrl = context.Request.Uri.AbsoluteUri,
                 ErrorMessage = message,
                 CurrentUser = context.GetCurrentUserDisplayName(),
                 LogoutUrl = context.GetIdentityServerLogoutUrl(),

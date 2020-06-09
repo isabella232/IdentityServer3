@@ -95,7 +95,7 @@ namespace IdentityServer3.Core.Services.Default
         {
             if (config == null) throw new ArgumentNullException("config");
             if (viewLoader == null) throw new ArgumentNullException("viewLoader");
-
+            
             this.config = config;
             this.viewLoader = viewLoader;
         }
@@ -132,7 +132,7 @@ namespace IdentityServer3.Core.Services.Default
         /// <param name="model">The model.</param>
         /// <param name="message">The message.</param>
         /// <returns>Stream for the HTML</returns>
-        public Task<Stream> ResetPasswordVerify(ResetPasswordViewModel model, SignInMessage message)
+        public virtual Task<Stream> ResetPasswordVerify(ResetPasswordViewModel model, SignInMessage message)
         {
             return Render(model, ResetPasswordVerifyView);
         }
@@ -226,6 +226,7 @@ namespace IdentityServer3.Core.Services.Default
             {
                 SiteName = model.SiteName,
                 SiteUrl = model.SiteUrl,
+                CurrentUrl = model.CurrentUrl,
                 Custom = model.Custom
             };
 

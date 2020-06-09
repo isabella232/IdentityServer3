@@ -28,6 +28,11 @@ namespace IdentityServer3.Core.ViewModels
         /// The site URL.
         /// </value>
         public string SiteUrl { get; set; }
+
+        /// <summary>
+        /// Current URL.
+        /// </summary>
+        public string CurrentUrl { get; set; }
         
         /// <summary>
         /// Gets or sets the name of the site.
