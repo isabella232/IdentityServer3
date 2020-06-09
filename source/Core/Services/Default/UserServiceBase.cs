@@ -116,5 +116,15 @@ namespace IdentityServer3.Core.Services.Default
         {
             return Task.FromResult(0);
         }
+
+        /// <summary>
+        /// This method is called to verify user using passcode.
+        /// </summary>
+        /// <param name="context">The context.</param>
+        /// <returns></returns>
+        public Task ResetPasswordVerifyAsync(ResetPasswordVerifyContext context)
+        {
+            return Task.FromResult(0);
+        }
     }
 }

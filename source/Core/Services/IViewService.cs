@@ -88,6 +88,14 @@ namespace IdentityServer3.Core.Services
         Task<Stream> ResetPassword(ResetPasswordViewModel model, SignInMessage message);
 
         /// <summary>
+        /// Loads the HTML for the reset password verify page.
+        /// </summary>
+        /// <param name="model">The model.</param>
+        /// <param name="message">The message.</param>
+        /// <returns>Stream for the HTML</returns>
+        Task<Stream> ResetPasswordVerify(ResetPasswordViewModel model, SignInMessage message);
+
+        /// <summary>
         /// Loads the HTML for the reset password callback page.
         /// </summary>
         /// <param name="model">The model.</param>

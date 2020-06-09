@@ -68,6 +68,8 @@ namespace IdentityServer3.Core.Events
             public const int ResetPasswordFailure = AuthenticationEventsStart + 13;
             public const int ResetPasswordCallbackSuccess = AuthenticationEventsStart + 14;
             public const int ResetPasswordCallbackFailure = AuthenticationEventsStart + 15;
+            public const int ResetPasswordVerifySuccess = AuthenticationEventsStart + 16;
+            public const int ResetPasswordVerifyFailure = AuthenticationEventsStart + 17;
 
             public const int ExternalLoginSuccess = AuthenticationEventsStart + 20;
             public const int ExternalLoginFailure = AuthenticationEventsStart + 21;

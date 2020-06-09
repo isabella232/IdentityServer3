@@ -70,6 +70,11 @@ namespace IdentityServer3.Core.Services.Default
             return inner.ResetPasswordAsync(context);
         }
 
+        public Task ResetPasswordVerifyAsync(ResetPasswordVerifyContext context)
+        {
+            return inner.ResetPasswordVerifyAsync(context);
+        }
+
         public Task IsActiveAsync(IsActiveContext context)
         {
             return inner.IsActiveAsync(context);

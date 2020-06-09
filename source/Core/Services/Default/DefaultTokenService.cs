@@ -231,11 +231,12 @@ namespace IdentityServer3.Core.Services.Default
         /// Creates a serialized and protected security token.
         /// </summary>
         /// <param name="token">The token.</param>
+        /// <param name="referenceTokenKey">Allows to define custom token key.</param>
         /// <returns>
         /// A security token in serialized form
         /// </returns>
         /// <exception cref="System.InvalidOperationException">Invalid token type.</exception>
-        public virtual async Task<string> CreateSecurityTokenAsync(Token token)
+        public virtual async Task<string> CreateSecurityTokenAsync(Token token, string referenceTokenKey = null)
         {
             string tokenResult;
 
@@ -251,7 +252,7 @@ namespace IdentityServer3.Core.Services.Default
                 {
                     Logger.Debug("Creating reference access token");
 
-                    var handle = CryptoRandom.CreateUniqueId();
+                    var handle = referenceTokenKey ?? CryptoRandom.CreateUniqueId();
                     await _tokenHandles.StoreAsync(handle, token);
 
                     tokenResult = handle;

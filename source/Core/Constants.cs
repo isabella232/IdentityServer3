@@ -665,6 +665,7 @@ namespace IdentityServer3.Core
             public const string Welcome = "idsrv.welcome";
             public const string ResetPassword = "idsrv.authentication.reset";
             public const string ResetPasswordCallback = "idsrv.authentication.resetcallback";
+            public const string ResetPasswordVerify = "idsrv.authentication.resetverify";
             public const string Login = "idsrv.authentication.login";
             public const string LoginExternal = "idsrv.authentication.loginexternal";
             public const string LoginExternalCallback = "idsrv.authentication.loginexternalcallback";
@@ -699,6 +700,7 @@ namespace IdentityServer3.Core
             public const string Login = "login";
             public const string ResetPassword = "reset";
             public const string ResetPasswordCallback = "doreset";
+            public const string ResetPasswordVerify = "verify";
             public const string LoginExternal = "external";
             public const string LoginExternalCallback = "callback";
             public const string Logout = "logout";

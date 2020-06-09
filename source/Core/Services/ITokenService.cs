@@ -42,7 +42,8 @@ namespace IdentityServer3.Core.Services
         /// Creates a serialized and protected security token.
         /// </summary>
         /// <param name="token">The token.</param>
+        /// <param name="referenceTokenKey">Allows to define custom token key.</param>
         /// <returns>A security token in serialized form</returns>
-        Task<string> CreateSecurityTokenAsync(Token token);
+        Task<string> CreateSecurityTokenAsync(Token token, string referenceTokenKey = null);
     }
 }

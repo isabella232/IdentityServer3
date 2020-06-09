@@ -216,6 +216,8 @@
     <Compile Include="Models\Contexts\ExternalAuthenticationContext.cs" />
     <Compile Include="Models\Contexts\ResetPasswordCallbackContext.cs" />
     <Compile Include="Models\Contexts\ResetPasswordContext.cs" />
+    <Compile Include="Models\Contexts\ResetPasswordContextBase.cs" />
+    <Compile Include="Models\Contexts\ResetPasswordVerifyContext.cs" />
     <Compile Include="Models\ParsedSecret.cs" />
     <Compile Include="Models\Contexts\PostAuthenticationContext.cs" />
     <Compile Include="Models\Contexts\ProfileDataRequestContext.cs" />
@@ -223,6 +225,7 @@
     <Compile Include="Models\Contexts\LocalAuthenticationContext.cs" />
     <Compile Include="Models\Contexts\PreAuthenticationContext.cs" />
     <Compile Include="Models\ResetPasswordResult.cs" />
+    <Compile Include="Models\ResetPasswordVerifyResult.cs" />
     <Compile Include="Models\RsaPublicKeyJwk.cs" />
     <Compile Include="Models\Secret.cs" />
     <Compile Include="Models\AuthenticatedLogin.cs" />
@@ -237,6 +240,7 @@
     </Compile>
     <Compile Include="ResponseHandling\IntrospectionResponseGenerator.cs" />
     <Compile Include="Results\CheckSessionResult.cs" />
+    <Compile Include="Results\ResetPasswordVerifyActionResult.cs" />
     <Compile Include="Results\ResetPasswordActionResult.cs" />
     <Compile Include="Results\ResetPasswordCallbackActionResult.cs" />
     <Compile Include="Results\RevocationErrorResult.cs" />
