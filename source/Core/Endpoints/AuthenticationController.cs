@@ -105,25 +105,24 @@ namespace IdentityServer3.Core.Endpoints
 
             if (signin.IsMissing())
             {
-                Logger.Info("No signin passed");
+                Logger.Info("No token passed");
+                return RenderErrorPage();
             }
-            else
+
+            if (signin.Length > MaxSignInMessageLength)
             {
-                if (signin.Length > MaxSignInMessageLength)
-                {
-                    Logger.Error("Signin parameter passed was larger than max length");
-                    return RenderErrorPage();
-                }
-
-                var signInMessage = signInMessageCookie.Read(signin);
-                if (signInMessage == null)
-                {
-                    Logger.Info("No cookie matching signin id found");
-                    return HandleNoSignin();
-                }
-
-                Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+                Logger.Error("Signin parameter passed was larger than max length");
+                return RenderErrorPage();
             }
+
+            var signInMessage = signInMessageCookie.Read(signin);
+            if (signInMessage == null)
+            {
+                Logger.Info("No cookie matching signin id found");
+                return HandleNoSignin();
+            }
+
+            Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
 
             return await RenderResetPasswordCallbackPage(token, signInMessageId: signin);
         }
@@ -147,28 +146,26 @@ namespace IdentityServer3.Core.Endpoints
                 return RenderErrorPage();
             }
 
-            SignInMessage signInMessage = null;
             if (signin.IsMissing())
             {
-                Logger.Info("No signin passed");
+                Logger.Info("No token passed");
+                return RenderErrorPage();
             }
-            else
+                
+            if (signin.Length > MaxSignInMessageLength)
             {
-                if (signin.Length > MaxSignInMessageLength)
-                {
-                    Logger.Error("Signin parameter passed was larger than max length");
-                    return RenderErrorPage();
-                }
-
-                signInMessage = signInMessageCookie.Read(signin);
-                if (signInMessage == null)
-                {
-                    Logger.Info("No cookie matching signin id found");
-                    return HandleNoSignin();
-                }
-
-                Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+                Logger.Error("Signin parameter passed was larger than max length");
+                return RenderErrorPage();
             }
+
+            SignInMessage signInMessage = signInMessageCookie.Read(signin);
+            if (signInMessage == null)
+            {
+                Logger.Info("No cookie matching signin id found");
+                return HandleNoSignin();
+            }
+
+            Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
 
             if (model == null)
             {
@@ -215,13 +212,7 @@ namespace IdentityServer3.Core.Endpoints
 
             await eventService.RaiseResetPasswordCallbackSuccessEventAsync();
 
-            // Reset was successful -> lets login the user
-            if (signInMessage != null)
-            {
-                return await LoginLocal(signin, new LoginCredentials() { Password = model.Password, Username = resetContext.UserName });
-            }
-
-            return await RenderResetPasswordCallbackPage(token, resetResult.ErrorMessage, resetContext.UserName, true, signInMessageId: signin);
+            return await LoginLocal(signin, new LoginCredentials() { Password = model.Password, Username = resetContext.UserName });
         }
 
         [Route(Constants.RoutePaths.ResetPasswordVerify, Name = Constants.RouteNames.ResetPasswordVerify)]
@@ -307,7 +298,7 @@ namespace IdentityServer3.Core.Endpoints
             if (!ModelState.IsValid)
             {
                 Logger.Warn("Validation error: username or password missing");
-                return await RenderResetPasswordVerifyPage(signInMessage, signin, ModelState.GetError(), model.Username, model.RememberMe == true);
+                return await RenderResetPasswordVerifyPage(signInMessage, signin, ModelState.GetError(), model.Username);
             }
 
             if (model.Username.Length > options.InputLengthRestrictions.UserName || model.Password.Length > 6)
@@ -333,7 +324,7 @@ namespace IdentityServer3.Core.Endpoints
                 var errorMessage = localizationService.GetMessage(MessageIds.InvalidUsernameOrPassword);
                 await eventService.RaiseLocalLoginFailureEventAsync(model.Username, signin, signInMessage, errorMessage);
 
-                return await RenderResetPasswordVerifyPage(signInMessage, signin, errorMessage, model.Username, model.RememberMe == true);
+                return await RenderResetPasswordVerifyPage(signInMessage, signin, errorMessage, model.Username);
             }
 
             if (authResult.IsError)
@@ -342,7 +333,7 @@ namespace IdentityServer3.Core.Endpoints
 
                 await eventService.RaiseResetPasswordVerifyFailureEventAsync(model.Username, signin, signInMessage, authResult.ErrorMessage);
 
-                return await RenderResetPasswordVerifyPage(signInMessage, signin, authResult.ErrorMessage, model.Username, model.RememberMe == true);
+                return await RenderResetPasswordVerifyPage(signInMessage, signin, authResult.ErrorMessage, model.Username);
             }
 
             if (string.IsNullOrEmpty(authResult.Token))
@@ -1271,7 +1262,7 @@ namespace IdentityServer3.Core.Endpoints
             return true;
         }
 
-        private async Task<IHttpActionResult> RenderResetPasswordCallbackPage(string token, string errorMessage = null, string username = null, bool? isSuccessfulReset = null, string signInMessageId = null)
+        private async Task<IHttpActionResult> RenderResetPasswordCallbackPage(string token, string errorMessage = null, string username = null, string signInMessageId = null)
         {
             var isLocalLoginAllowed = options.AuthenticationOptions.EnableLocalLogin;
 
@@ -1303,14 +1294,13 @@ namespace IdentityServer3.Core.Endpoints
                 LogoutUrl = context.GetIdentityServerLogoutUrl(),
                 AntiForgery = antiForgeryToken.GetAntiForgeryToken(),
                 Username = username,
-                IsSuccessfulReset = isSuccessfulReset,
                 IsFromSignIn = !string.IsNullOrEmpty(signInMessageId)
             };
 
             return new ResetPasswordCallbackActionResult(viewService, resetPasswordModel, token);
         }
 
-        private async Task<IHttpActionResult> RenderResetPasswordVerifyPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null, bool? isSuccessfulReset = null)
+        private async Task<IHttpActionResult> RenderResetPasswordVerifyPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null)
         {
             if (message == null) throw new ArgumentNullException("message");
 
@@ -1356,14 +1346,13 @@ namespace IdentityServer3.Core.Endpoints
                 ClientName = client != null ? client.ClientName : null,
                 ClientUrl = client != null ? client.ClientUri : null,
                 ClientLogoUrl = client != null ? client.LogoUri : null,
-                IsSuccessfulReset = isSuccessfulReset,
                 IsFromSignIn = !string.IsNullOrEmpty(signInMessageId)
             };
 
             return new ResetPasswordVerifyActionResult(viewService, resetPasswordModel, message);
         }
 
-        private async Task<IHttpActionResult> RenderResetPasswordPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null, bool? isSuccessfulReset = null)
+        private async Task<IHttpActionResult> RenderResetPasswordPage(SignInMessage message, string signInMessageId, string errorMessage = null, string username = null)
         {
             if (message == null) throw new ArgumentNullException("message");
 
@@ -1409,7 +1398,6 @@ namespace IdentityServer3.Core.Endpoints
                 ClientName = client != null ? client.ClientName : null,
                 ClientUrl = client != null ? client.ClientUri : null,
                 ClientLogoUrl = client != null ? client.LogoUri : null,
-                IsSuccessfulReset = isSuccessfulReset,
                 IsFromSignIn = !string.IsNullOrEmpty(signInMessageId)
             };
 
