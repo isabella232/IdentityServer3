@@ -743,6 +743,7 @@ namespace IdentityServer3.Core
             public const string IdentityServerHost     = "idsrv:IdentityServerHost";
             public const string IdentityServerOrigin = "idsrv:IdentityServerOrigin";
 
+            public const string RequestLanguage = "idsrv:Language";
             public const string RequestId = "idsrv:RequestId";
         }
 

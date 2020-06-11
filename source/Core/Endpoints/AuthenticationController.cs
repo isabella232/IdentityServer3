@@ -103,26 +103,10 @@ namespace IdentityServer3.Core.Endpoints
 
             Logger.DebugFormat("Token passed to reset password callback: {0}", token);
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No token passed");
-                return RenderErrorPage();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
-
-            Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             return await RenderResetPasswordCallbackPage(token, signInMessageId: signin);
         }
@@ -146,26 +130,10 @@ namespace IdentityServer3.Core.Endpoints
                 return RenderErrorPage();
             }
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No token passed");
-                return RenderErrorPage();
-            }
-                
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            SignInMessage signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
-
-            Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             if (model == null)
             {
@@ -221,26 +189,10 @@ namespace IdentityServer3.Core.Endpoints
         {
             Logger.Info("Reset password verify page requested");
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No signin id passed");
-                return HandleNoSignin();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
-
-            Logger.DebugFormat("Signin message passed to reset password verify: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             return await RenderResetPasswordVerifyPage(signInMessage, signin);
         }
@@ -252,26 +204,10 @@ namespace IdentityServer3.Core.Endpoints
         {
             Logger.Info("Reset password verify page requested");
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No signin id passed");
-                return HandleNoSignin();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
-
-            Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             if (!(await IsLocalLoginAllowedForClient(signInMessage)))
             {
@@ -358,26 +294,10 @@ namespace IdentityServer3.Core.Endpoints
         {
             Logger.Info("Reset password page requested");
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No signin id passed");
-                return HandleNoSignin();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
-
-            Logger.DebugFormat("Signin message passed to reset password: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             return await RenderResetPasswordPage(signInMessage, signin);
         }
@@ -395,24 +315,10 @@ namespace IdentityServer3.Core.Endpoints
                 return StatusCode(HttpStatusCode.MethodNotAllowed);
             }
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No signin id passed");
-                return HandleNoSignin();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             if (!(await IsLocalLoginAllowedForClient(signInMessage)))
             {
@@ -484,26 +390,10 @@ namespace IdentityServer3.Core.Endpoints
         {
             Logger.Info("Login page requested");
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No signin id passed");
-                return HandleNoSignin();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
-
-            Logger.DebugFormat("Signin message passed to login: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             var preAuthContext = new PreAuthenticationContext { SignInMessage = signInMessage };
             await userService.PreAuthenticateAsync(preAuthContext);
@@ -558,24 +448,10 @@ namespace IdentityServer3.Core.Endpoints
                 return StatusCode(HttpStatusCode.MethodNotAllowed);
             }
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No signin id passed");
-                return HandleNoSignin();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-            
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             if (!(await IsLocalLoginAllowedForClient(signInMessage)))
             {
@@ -669,24 +545,10 @@ namespace IdentityServer3.Core.Endpoints
                 return RenderErrorPage();
             }
 
-            if (signin.IsMissing())
-            {
-                Logger.Info("No signin id passed");
-                return HandleNoSignin();
-            }
-
-            if (signin.Length > MaxSignInMessageLength)
-            {
-                Logger.Error("Signin parameter passed was larger than max length");
-                return RenderErrorPage();
-            }
-
-            var signInMessage = signInMessageCookie.Read(signin);
-            if (signInMessage == null)
-            {
-                Logger.Info("No cookie matching signin id found");
-                return HandleNoSignin();
-            }
+            SignInMessage signInMessage;
+            IHttpActionResult errorResult;
+            if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
+                return errorResult;
 
             if (!(await clientStore.IsValidIdentityProviderAsync(signInMessage.ClientId, provider)))
             {
@@ -1590,6 +1452,43 @@ namespace IdentityServer3.Core.Endpoints
             };
             var errorResult = new ErrorActionResult(viewService, errorModel);
             return errorResult;
+        }
+
+        private bool ValidateSignin(string signin, out IHttpActionResult errorResult, out SignInMessage signInMessage)
+        {
+            signInMessage = null;
+
+            if (signin.IsMissing())
+            {
+                Logger.Info("No signin id passed");
+                errorResult = HandleNoSignin();
+                return false;
+            }
+
+            if (signin.Length > MaxSignInMessageLength)
+            {
+                Logger.Error("Signin parameter passed was larger than max length");
+                errorResult = RenderErrorPage();
+                return false;
+            }
+
+            signInMessage = signInMessageCookie.Read(signin);
+            if (signInMessage == null)
+            {
+                Logger.Info("No cookie matching signin id found");
+                errorResult = HandleNoSignin();
+                return false;
+            }
+
+            Logger.DebugFormat("Signin message passed: {0}", JsonConvert.SerializeObject(signInMessage, Formatting.Indented));
+
+            if (!string.IsNullOrEmpty(signInMessage.UiLocales))
+            {
+                this.context.Environment.SetRequestLanguage(signInMessage.UiLocales);
+            }
+
+            errorResult = null;
+            return true;
         }
     }
 }

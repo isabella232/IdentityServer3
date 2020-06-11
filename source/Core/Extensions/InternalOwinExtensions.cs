@@ -49,6 +49,13 @@ namespace IdentityServer3.Core.Extensions
             env[Constants.OwinEnvironment.RequestId] = id;
         }
 
+        public static void SetRequestLanguage(this IDictionary<string, object> env, string langauge)
+        {
+            if (env == null) throw new ArgumentNullException("env");
+
+            env[Constants.OwinEnvironment.RequestLanguage] = langauge;
+        }
+
         public static void SetIdentityServerHost(this IDictionary<string, object> env, string value)
         {
             if (env == null) throw new ArgumentNullException("env");
