@@ -50,12 +50,13 @@ namespace IdentityServer3.Core.Validation
         private readonly TokenValidationLog _log;
 
         // todo: remove in 3.0.0
-        public TokenValidator(IdentityServerOptions options, IClientStore clients, ITokenHandleStore tokenHandles, ICustomTokenValidator customValidator)
+        public TokenValidator(IdentityServerOptions options, IClientStore clients, ITokenHandleStore tokenHandles, ICustomTokenValidator customValidator, ISigningKeyService keyService)
         {
             _options = options;
             _clients = clients;
             _tokenHandles = tokenHandles;
             _customValidator = customValidator;
+            _keyService = keyService;
 
             _log = new TokenValidationLog();
         }
