@@ -38,7 +38,7 @@ namespace IdentityServer3.Core.Services.Default
         /// <summary>
         /// The user service
         /// </summary>
-        protected readonly IUserService _users;
+        protected readonly IBasicUserService _users;
 
         /// <summary>
         /// The client store
@@ -51,6 +51,9 @@ namespace IdentityServer3.Core.Services.Default
         /// <param name="users">The users store.</param>
         /// <param name="clients">The client store.</param>
         public DefaultCustomTokenValidator(IUserService users, IClientStore clients)
+            : this((IBasicUserService)users, clients) { }
+
+        public DefaultCustomTokenValidator(IBasicUserService users, IClientStore clients)
         {
             _users = users;
             _clients = clients;

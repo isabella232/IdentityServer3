@@ -52,7 +52,7 @@ namespace IdentityServer3.Core.Configuration.Hosting
             builder.Register(fact.ScopeStore);
             builder.Register(fact.ClientStore);
             builder.RegisterDecorator<IUserService, ExternalClaimsFilterUserService>(fact.UserService);
-            
+
             // optional from factory
             builder.RegisterDecoratorDefaultInstance<IAuthorizationCodeStore, KeyHashingAuthorizationCodeStore, InMemoryAuthorizationCodeStore>(fact.AuthorizationCodeStore);
             builder.RegisterDecoratorDefaultInstance<ITokenHandleStore, KeyHashingTokenHandleStore, InMemoryTokenHandleStore>(fact.TokenHandleStore);

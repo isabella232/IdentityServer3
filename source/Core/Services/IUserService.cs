@@ -22,7 +22,7 @@ namespace IdentityServer3.Core.Services
     /// <summary>
     /// This interface allows IdentityServer to connect to your user and profile store.
     /// </summary>
-    public interface IUserService
+    public interface IUserService : IBasicUserService
     {
         /// <summary>
         /// This method gets called before the login page is shown. This allows you to determine if the user should be authenticated by some out of band mechanism (e.g. client certificates or trusted headers).
@@ -67,14 +67,6 @@ namespace IdentityServer3.Core.Services
         /// <param name="context">The context.</param>
         /// <returns></returns>
         Task GetProfileDataAsync(ProfileDataRequestContext context);
-
-        /// <summary>
-        /// This method gets called whenever identity server needs to determine if the user is valid or active (e.g. if the user's account has been deactivated since they logged in).
-        /// (e.g. during token issuance or validation).
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        Task IsActiveAsync(IsActiveContext context);
 
         /// <summary>
         /// This method is called when the user asks for password to be reset.

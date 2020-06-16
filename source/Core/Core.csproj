@@ -256,6 +256,7 @@
     <Compile Include="Services\Default\DefaultSigningKeyService.cs" />
     <Compile Include="Services\Default\DefaultTokenSigningService.cs" />
     <Compile Include="Services\IAuthenticationSessionValidator.cs" />
+    <Compile Include="Services\IBasicUserService.cs" />
     <Compile Include="Services\ICustomTokenResponseGenerator.cs" />
     <Compile Include="Services\ISigningKeyService.cs" />
     <Compile Include="Validation\BasicAuthenticationSecretParser.cs" />
