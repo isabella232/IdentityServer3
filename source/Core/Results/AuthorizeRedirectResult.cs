@@ -48,6 +48,11 @@ namespace IdentityServer3.Core.Results
         {
             var responseMessage = new HttpResponseMessage(HttpStatusCode.Redirect);
             var url = _response.RedirectUri;
+            Uri uri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri) && url.StartsWith("~/"))
+            {
+                url = System.Web.VirtualPathUtility.ToAbsolute(url);
+            }
 
             var query = _response.ToNameValueCollection().ToQueryString();
 
@@ -60,7 +65,7 @@ namespace IdentityServer3.Core.Results
                 url = url.AddHashFragment(query);
             }
 
-            responseMessage.Headers.Location = new Uri(url);
+            responseMessage.Headers.Location = new Uri(url, UriKind.RelativeOrAbsolute);
 
             if (_response.IsError)
             {

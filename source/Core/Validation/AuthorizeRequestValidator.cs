@@ -146,7 +146,10 @@ namespace IdentityServer3.Core.Validation
             }
 
             Uri uri;
-            if (!Uri.TryCreate(redirectUri, UriKind.Absolute, out uri))
+            if (
+                !Uri.TryCreate(redirectUri, UriKind.Absolute, out uri)
+                && (!redirectUri.StartsWith("~/") || !Uri.TryCreate(redirectUri.Substring(1), UriKind.Relative, out uri))
+                )
             {
                 LogError("invalid redirect_uri: " + redirectUri, request);
                 return Invalid(request);
