@@ -40,10 +40,13 @@ namespace IdentityServer3.Core.Validation
         /// <summary>
         /// Instantiates an instance of private_key_jwt secret validator
         /// </summary>
-        /// <param name="options">IdentityServer options</param>
-        public PrivateKeyJwtSecretValidator(IdentityServerOptions options)
+        /// <param name="audienceUri">Audience URI</param>
+        public PrivateKeyJwtSecretValidator(string audienceUri)
         {
-            audienceUri = string.Concat(options.DynamicallyCalculatedIssuerUri.EnsureTrailingSlash(), Constants.RoutePaths.Oidc.Token);
+            if (audienceUri == null)
+                throw new ArgumentNullException("audienceUri");
+
+            this.audienceUri = string.Concat(audienceUri.EnsureTrailingSlash(), Constants.RoutePaths.Oidc.Token);
         }
 
         /// <summary>

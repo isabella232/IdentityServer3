@@ -132,7 +132,6 @@
     <Compile Include="Configuration\AppBuilderExtensions\ConfigureRenderLoggedOutPageExtension.cs" />
     <Compile Include="Configuration\AppBuilderExtensions\ConfigureRequestBodyBufferExtension.cs" />
     <Compile Include="Configuration\AppBuilderExtensions\ConfigureSignOutMessageCookieExtension.cs" />
-    <Compile Include="Configuration\AppBuilderExtensions\ConfigureIdentityServerIssuerExtension.cs" />
     <Compile Include="Configuration\AppBuilderExtensions\ConfigureRequestIdExtension.cs" />
     <Compile Include="Configuration\AppBuilderExtensions\ConfigureHttpLoggingExtension.cs" />
     <Compile Include="Configuration\AuthenticationSessionStoreWrapper.cs" />
@@ -254,11 +253,13 @@
     <Compile Include="Services\DefaultViewService\DefaultViewServiceRegistration.cs" />
     <Compile Include="Services\Default\DefaultAuthenticationSessionValidator.cs" />
     <Compile Include="Services\Default\DefaultCustomTokenResponseGenerator.cs" />
+    <Compile Include="Services\Default\DefaultPasswordResetService.cs" />
     <Compile Include="Services\Default\DefaultSigningKeyService.cs" />
     <Compile Include="Services\Default\DefaultTokenSigningService.cs" />
     <Compile Include="Services\IAuthenticationSessionValidator.cs" />
     <Compile Include="Services\IBasicUserService.cs" />
     <Compile Include="Services\ICustomTokenResponseGenerator.cs" />
+    <Compile Include="Services\IPasswordResetService.cs" />
     <Compile Include="Services\ISigningKeyService.cs" />
     <Compile Include="Validation\BasicAuthenticationSecretParser.cs" />
     <Compile Include="Validation\IntrospectionRequestValidationResult.cs" />

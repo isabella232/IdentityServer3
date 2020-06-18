@@ -91,7 +91,6 @@ namespace Owin
             app.ConfigureRequestId();
             app.ConfigureDataProtectionProvider(options);
             app.ConfigureIdentityServerBaseUrl(options.PublicOrigin);
-            app.ConfigureIdentityServerIssuer(options);
 
             app.ConfigureRequestBodyBuffer();
 

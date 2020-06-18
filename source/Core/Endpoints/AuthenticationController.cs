@@ -51,6 +51,7 @@ namespace IdentityServer3.Core.Endpoints
         private readonly IOwinContext context;
         private readonly IViewService viewService;
         private readonly IUserService userService;
+        private readonly IPasswordResetService passwordResetService;
         private readonly IdentityServerOptions options;
         private readonly IClientStore clientStore;
         private readonly IEventService eventService;
@@ -65,6 +66,7 @@ namespace IdentityServer3.Core.Endpoints
             OwinEnvironmentService owin,
             IViewService viewService,
             IUserService userService,
+            IPasswordResetService passwordResetService,
             IdentityServerOptions idSvrOptions,
             IClientStore clientStore,
             IEventService eventService,
@@ -78,6 +80,7 @@ namespace IdentityServer3.Core.Endpoints
             this.context = new OwinContext(owin.Environment);
             this.viewService = viewService;
             this.userService = userService;
+            this.passwordResetService = passwordResetService;
             this.options = idSvrOptions;
             this.clientStore = clientStore;
             this.eventService = eventService;
@@ -142,7 +145,7 @@ namespace IdentityServer3.Core.Endpoints
             }
 
             var resetContext = new ResetPasswordCallbackContext { Token = token, Password = model.Password, ConfirmedPassword = model.ConfirmedPassword };
-            await userService.ResetPasswordAsync(resetContext);
+            await passwordResetService.ResetPasswordAsync(resetContext);
 
             var resetResult = resetContext.ResetPasswordResult;
             if (resetResult == null)
@@ -250,7 +253,7 @@ namespace IdentityServer3.Core.Endpoints
                 SignInMessage = signInMessage
             };
 
-            await userService.ResetPasswordVerifyAsync(authenticationContext);
+            await passwordResetService.ResetPasswordVerifyAsync(authenticationContext);
 
             var authResult = authenticationContext.ResetPasswordResult;
             if (authResult == null)
@@ -350,7 +353,7 @@ namespace IdentityServer3.Core.Endpoints
             }
 
             var resetContext = new ResetPasswordContext { SignInMessage = signInMessage, UserName = model.Username };
-            await userService.ResetPasswordAsync(resetContext);
+            await passwordResetService.ResetPasswordAsync(resetContext);
 
             var resetResult = resetContext.ResetPasswordResult;
             if (resetResult == null)
@@ -507,6 +510,21 @@ namespace IdentityServer3.Core.Endpoints
                 await eventService.RaiseLocalLoginFailureEventAsync(model.Username, signin, signInMessage, errorMessage);
                 
                 return await RenderLoginPage(signInMessage, signin, errorMessage, model.Username, model.RememberMe == true);
+            }
+
+            if (authResult.IsForcePasswordChanged)
+            {
+                Logger.WarnFormat("User '{0}' is forced to change password", model.Username);
+
+                await passwordResetService.HandlePasswordChangeForcedAsync(authenticationContext);
+
+                authResult = authenticationContext.AuthenticateResult;
+
+                if (authResult == null)
+                {
+                    Logger.Error("Password reset service returned no result");
+                    return RenderErrorPage();
+                }
             }
 
             if (authResult.IsError)

@@ -53,6 +53,11 @@ namespace IdentityServer3.Core.Models
         public string PartialSignInRedirectPath { get; private set; }
 
         /// <summary>
+        /// Indicates whether password change is forced.
+        /// </summary>
+        public bool IsForcePasswordChanged { get; private set; }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="AuthenticateResult"/> class.
         /// </summary>
         /// <param name="errorMessage">The error message.</param>
@@ -62,7 +67,19 @@ namespace IdentityServer3.Core.Models
             if (errorMessage.IsMissing()) throw new ArgumentNullException("errorMessage");
             ErrorMessage = errorMessage;
         }
-        
+
+        /// <summary>
+        /// This constructor is called when user's password needs to be changed.
+        /// </summary>
+        /// <param name="isForcePasswordChanged"></param>
+        public AuthenticateResult(bool isForcePasswordChanged)
+        {
+            if (!isForcePasswordChanged)
+                throw new ArgumentException("The value can be true only.", "isForcePasswordChanged");
+
+            this.IsForcePasswordChanged = isForcePasswordChanged;
+        }
+
         internal AuthenticateResult(ClaimsPrincipal user)
         {
             if (user == null) throw new ArgumentNullException("user");

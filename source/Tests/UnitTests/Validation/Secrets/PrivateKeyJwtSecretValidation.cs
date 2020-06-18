@@ -39,12 +39,7 @@ namespace IdentityServer3.Tests.Validation.Secrets
 
         public PrivateKeyJwtSecretValidation()
         {
-            _validator = new PrivateKeyJwtSecretValidator(
-                    new IdentityServerOptions()
-                    {
-                        DynamicallyCalculatedIssuerUri = "https://idsrv3.com"
-                    }
-                );
+            _validator = new PrivateKeyJwtSecretValidator("https://idsrv3.com");
             _clients = new InMemoryClientStore(ClientValidationTestClients.Get());
         }
 

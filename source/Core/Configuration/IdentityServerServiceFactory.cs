@@ -113,6 +113,11 @@ namespace IdentityServer3.Core.Configuration
         public Registration<IUserService> UserService { get; set; }
 
         /// <summary>
+        /// Service used to reset user password.
+        /// </summary>
+        public Registration<IPasswordResetService> PasswordResetService { get; set; }
+
+        /// <summary>
         /// Gets or sets the scope store. The scope store implements retrieval of scopes configuration data.
         /// </summary>
         /// <value>

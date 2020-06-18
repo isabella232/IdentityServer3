@@ -66,26 +66,9 @@ namespace IdentityServer3.Core.Services.Default
         protected readonly IEventService _events;
         
         /// <summary>
-        /// The OWIN environment service
+        /// The OWIN context
         /// </summary>
-        protected readonly OwinEnvironmentService _owinEnvironmentService;
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DefaultTokenService" /> class. This overloaded constructor is deprecated and will be removed in 3.0.0.
-        /// </summary>
-        /// <param name="options">The options.</param>
-        /// <param name="claimsProvider">The claims provider.</param>
-        /// <param name="tokenHandles">The token handles.</param>
-        /// <param name="signingService">The signing service.</param>
-        /// <param name="events">The events service.</param>
-        public DefaultTokenService(IdentityServerOptions options, IClaimsProvider claimsProvider, ITokenHandleStore tokenHandles, ITokenSigningService signingService, IEventService events)
-        {
-            _options = options;
-            _claimsProvider = claimsProvider;
-            _tokenHandles = tokenHandles;
-            _signingService = signingService;
-            _events = events;
-        }
+        protected readonly OwinContext _context;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultTokenService" /> class.
@@ -103,21 +86,7 @@ namespace IdentityServer3.Core.Services.Default
             _tokenHandles = tokenHandles;
             _signingService = signingService;
             _events = events;
-            _owinEnvironmentService = owinEnvironmentService;
-        }
-
-        // todo: remove in 3.0.0
-        private string IssuerUri
-        {
-            get
-            {
-                if (_owinEnvironmentService != null)
-                {
-                    return new OwinContext(_owinEnvironmentService.Environment).GetIdentityServerIssuerUri();
-                }
-
-                return _options.DynamicallyCalculatedIssuerUri;
-            }
+            _context = new OwinContext(owinEnvironmentService.Environment);
         }
 
         /// <summary>
@@ -172,7 +141,7 @@ namespace IdentityServer3.Core.Services.Default
             var token = new Token(Constants.TokenTypes.IdentityToken)
             {
                 Audience = request.Client.ClientId,
-                Issuer = IssuerUri,
+                Issuer = _context.GetIdentityServerIssuerUri(),
                 Lifetime = request.Client.IdentityTokenLifetime,
                 Claims = claims.Distinct(new ClaimComparer()).ToList(),
                 Client = request.Client
@@ -215,10 +184,12 @@ namespace IdentityServer3.Core.Services.Default
 
         protected Token CreateAccessToken(Client client, List<Claim> claims)
         {
+            string issuerUri = _context.GetIdentityServerIssuerUri();
+
             var token = new Token(Constants.TokenTypes.AccessToken)
             {
-                Audience = string.Format(Constants.AccessTokenAudience, IssuerUri.EnsureTrailingSlash()),
-                Issuer = IssuerUri,
+                Audience = string.Format(Constants.AccessTokenAudience, issuerUri.EnsureTrailingSlash()),
+                Issuer = issuerUri,
                 Lifetime = client.AccessTokenLifetime,
                 Claims = claims.Distinct(new ClaimComparer()).ToList(),
                 Client = client

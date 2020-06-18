@@ -49,18 +49,6 @@ namespace IdentityServer3.Core.Validation
 
         private readonly TokenValidationLog _log;
 
-        // todo: remove in 3.0.0
-        public TokenValidator(IdentityServerOptions options, IClientStore clients, ITokenHandleStore tokenHandles, ICustomTokenValidator customValidator, ISigningKeyService keyService)
-        {
-            _options = options;
-            _clients = clients;
-            _tokenHandles = tokenHandles;
-            _customValidator = customValidator;
-            _keyService = keyService;
-
-            _log = new TokenValidationLog();
-        }
-
         public TokenValidator(IdentityServerOptions options, IClientStore clients, ITokenHandleStore tokenHandles, ICustomTokenValidator customValidator, OwinEnvironmentService owinEnvironment, ISigningKeyService keyService)
         {
             _options = options;
@@ -71,20 +59,6 @@ namespace IdentityServer3.Core.Validation
             _keyService = keyService;
 
             _log = new TokenValidationLog();
-        }
-
-        // todo: remove in 3.0.0
-        private string IssuerUri
-        {
-            get
-            {
-                if (_context != null)
-                {
-                    return _context.GetIdentityServerIssuerUri();
-                }
-
-                return _options.DynamicallyCalculatedIssuerUri;
-            }
         }
 
         public virtual async Task<TokenValidationResult> ValidateIdentityTokenAsync(string token, string clientId = null, bool validateLifetime = true)
@@ -173,7 +147,7 @@ namespace IdentityServer3.Core.Validation
                 _log.AccessTokenType = AccessTokenType.Jwt.ToString();
                 result = await ValidateJwtAsync(
                     token,
-                    string.Format(Constants.AccessTokenAudience, IssuerUri.EnsureTrailingSlash()),
+                    string.Format(Constants.AccessTokenAudience, _context.GetIdentityServerIssuerUri().EnsureTrailingSlash()),
                     await _keyService.GetPublicKeysAsync());
             }
             else
@@ -242,7 +216,7 @@ namespace IdentityServer3.Core.Validation
 
             var parameters = new TokenValidationParameters
             {
-                ValidIssuer = IssuerUri,
+                ValidIssuer = _context.GetIdentityServerIssuerUri(),
                 IssuerSigningKeys = keys,
                 ValidateLifetime = validateLifetime,
                 ValidAudience = audience
