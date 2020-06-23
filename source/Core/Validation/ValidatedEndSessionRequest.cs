@@ -46,5 +46,10 @@ namespace IdentityServer3.Core.Validation
         /// The state.
         /// </value>
         public string State { get; set; }
+
+        /// <summary>
+        /// Gets or sets the UI locales.
+        /// </summary>
+        public string UiLocales { get; set; }
     }
 }

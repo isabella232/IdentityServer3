@@ -103,6 +103,7 @@ namespace IdentityServer3.Core
             public const string IdTokenHint           = "id_token_hint";
             public const string PostLogoutRedirectUri = "post_logout_redirect_uri";
             public const string State                 = "state";
+            public const string UiLocales             = "ui_locales";
         }
 
         public static class TokenResponse

@@ -30,6 +30,11 @@ namespace IdentityServer3.Core.ResponseHandling
         public SignOutMessage CreateSignoutMessage(ValidatedEndSessionRequest request)
         {
             var message = new SignOutMessage();
+
+            if (request.UiLocales != null)
+            {
+                message.UiLocales = request.UiLocales;
+            }
             
             if (request.Client != null)
             {

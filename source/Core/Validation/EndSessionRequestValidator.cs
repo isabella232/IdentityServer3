@@ -67,6 +67,12 @@ namespace IdentityServer3.Core.Validation
                 return Invalid();
             }
 
+            var uiLocales = parameters.Get(Constants.EndSessionRequest.UiLocales);
+            if (uiLocales.IsPresent())
+            {
+                _validatedRequest.UiLocales = uiLocales;
+            }
+
             var idTokenHint = parameters.Get(Constants.EndSessionRequest.IdTokenHint);
             if (idTokenHint.IsPresent())
             {

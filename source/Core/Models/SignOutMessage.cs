@@ -36,5 +36,10 @@ namespace IdentityServer3.Core.Models
         /// The return URL.
         /// </value>
         public string ReturnUrl { get; set; }
+
+        /// <summary>
+        /// Gets or sets the UI locales.
+        /// </summary>
+        public string UiLocales { get; set; }
     }
 }

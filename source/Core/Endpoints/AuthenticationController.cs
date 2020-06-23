@@ -1438,9 +1438,20 @@ namespace IdentityServer3.Core.Endpoints
             var iframeUrls = options.RenderProtocolUrls(baseUrl, sessionCookie.GetSessionId());
 
             var message = signOutMessageCookie.Read(id);
-            var redirectUrl = message != null ? message.ReturnUrl : null;
-            var clientName = await clientStore.GetClientName(message);
-            
+            string redirectUrl = null;
+            string clientName = null;
+
+            if (message != null)
+            {
+                redirectUrl = message.ReturnUrl;
+                clientName = await clientStore.GetClientName(message);
+
+                if (!string.IsNullOrEmpty(message.UiLocales))
+                {
+                    this.context.Environment.SetRequestLanguage(message.UiLocales);
+                }
+            }
+
             var loggedOutModel = new LoggedOutViewModel
             {
                 SiteName = options.SiteName,
