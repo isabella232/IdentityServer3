@@ -142,6 +142,7 @@ namespace IdentityServer3.Core.Services.Default
             {
                 Audience = request.Client.ClientId,
                 Issuer = _context.GetIdentityServerIssuerUri(),
+                WebService = _context.GetIdentityServerWebServiceUri(),
                 Lifetime = request.Client.IdentityTokenLifetime,
                 Claims = claims.Distinct(new ClaimComparer()).ToList(),
                 Client = request.Client
@@ -185,11 +186,13 @@ namespace IdentityServer3.Core.Services.Default
         protected Token CreateAccessToken(Client client, List<Claim> claims)
         {
             string issuerUri = _context.GetIdentityServerIssuerUri();
+            string wsUri = _context.GetIdentityServerWebServiceUri();
 
             var token = new Token(Constants.TokenTypes.AccessToken)
             {
                 Audience = string.Format(Constants.AccessTokenAudience, issuerUri.EnsureTrailingSlash()),
                 Issuer = issuerUri,
+                WebService = wsUri,
                 Lifetime = client.AccessTokenLifetime,
                 Claims = claims.Distinct(new ClaimComparer()).ToList(),
                 Client = client

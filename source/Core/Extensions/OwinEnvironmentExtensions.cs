@@ -686,6 +686,20 @@ namespace IdentityServer3.Core.Extensions
         }
 
         /// <summary>
+        /// Gets the web service URL.
+        /// </summary>s
+        /// <returns></returns>
+        public static string GetIdentityServerWebServiceUri(this IDictionary<string, object> env)
+        {
+            if (env == null) throw new ArgumentNullException("env");
+
+            string uri = env.GetIdentityServerHost();
+            if (uri.EndsWith("/")) uri = uri.Substring(0, uri.Length - 1);
+
+            return uri;
+        }
+
+        /// <summary>
         /// Returns collection of ClientIds that the user has signed into for the current authentication session.
         /// </summary>
         /// <param name="env">The OWIN environment.</param>
@@ -711,10 +725,12 @@ namespace IdentityServer3.Core.Extensions
         {
             var signingService = env.ResolveDependency<ITokenSigningService>();
             var issuerUri = env.GetIdentityServerIssuerUri();
+            var wsUri = env.GetIdentityServerWebServiceUri();
 
             var token = new Token
             {
                 Issuer = issuerUri,
+                WebService = wsUri,
                 Audience = string.Format(Constants.AccessTokenAudience, issuerUri.EnsureTrailingSlash()),
                 Lifetime = lifetime,
                 Claims = new List<Claim>

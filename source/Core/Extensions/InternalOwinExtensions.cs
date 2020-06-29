@@ -290,6 +290,13 @@ namespace IdentityServer3.Core.Extensions
             return context.Environment.GetIdentityServerIssuerUri();
         }
 
+        public static string GetIdentityServerWebServiceUri(this IOwinContext context)
+        {
+            if (context == null) throw new ArgumentNullException("context");
+
+            return context.Environment.GetIdentityServerWebServiceUri();
+        }
+
         public static string GetIdentityServerLogoutUrl(this IOwinContext context)
         {
             if (context == null) throw new ArgumentNullException("context");

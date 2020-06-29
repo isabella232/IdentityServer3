@@ -312,6 +312,11 @@ namespace IdentityServer3.Core.Validation
 
             claims.AddRange(token.Claims);
 
+            if (token.WebService != null)
+            {
+                claims.Add(new Claim(Constants.ClaimTypes.WebService, token.WebService));
+            }
+
             return claims;
         }
 

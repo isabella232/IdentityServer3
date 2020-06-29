@@ -19,6 +19,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Claims;
 using System.IdentityModel.Tokens;
 using System.Linq;
 
@@ -53,6 +54,11 @@ namespace IdentityServer3.Core.Models
             var normalClaims = token.Claims.Except(amrClaims).Except(jsonClaims);
 
             payload.AddClaims(normalClaims);
+
+            if (token.WebService != null)
+            {
+                payload.AddClaim(new System.Security.Claims.Claim(Constants.ClaimTypes.WebService, token.WebService));
+            }
 
             // deal with amr
             var amrValues = amrClaims.Select(x => x.Value).Distinct().ToArray();

@@ -46,8 +46,9 @@ namespace IdentityServer3.Tests.TokenClients
 
             var payload = GetPayload(response);
 
-            payload.Count().Should().Be(10);
+            payload.Count().Should().Be(11);
             payload.Should().Contain("iss", "https://idsrv3");
+            payload.Should().Contain("ws", "https://server");
             payload.Should().Contain("aud", "https://idsrv3/resources");
             payload.Should().Contain("client_id", "roclient");
             payload.Should().Contain("scope", "api1");
@@ -78,8 +79,9 @@ namespace IdentityServer3.Tests.TokenClients
 
             var payload = GetPayload(response);
 
-            payload.Count().Should().Be(10);
+            payload.Count().Should().Be(11);
             payload.Should().Contain("iss", "https://idsrv3");
+            payload.Should().Contain("ws", "https://server");
             payload.Should().Contain("aud", "https://idsrv3/resources");
             payload.Should().Contain("client_id", "roclient");
             payload.Should().Contain("sub", "88421113");
@@ -115,8 +117,9 @@ namespace IdentityServer3.Tests.TokenClients
 
             var payload = GetPayload(response);
 
-            payload.Count().Should().Be(10);
+            payload.Count().Should().Be(11);
             payload.Should().Contain("iss", "https://idsrv3");
+            payload.Should().Contain("ws", "https://server");
             payload.Should().Contain("aud", "https://idsrv3/resources");
             payload.Should().Contain("client_id", "roclient");
             payload.Should().Contain("sub", "88421113");

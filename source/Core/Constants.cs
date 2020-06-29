@@ -506,6 +506,11 @@ namespace IdentityServer3.Core
             /// <summary>Issuer Identifier for the Issuer of the response. The iss value is a case sensitive URL using the https scheme that contains scheme, host, and optionally, port number and path components and no query or fragment components.</summary>
             public const string Issuer                              = "iss";
 
+            /// <summary>
+            /// Web service address.
+            /// </summary>
+            public const string WebService                          = "ws";
+
             /// <summary>The time before which the JWT MUST NOT be accepted for processing, specified as the number of seconds from 1970-01-01T0:0:0Z</summary>
             public const string NotBefore                           = "nbf";
 
@@ -585,6 +590,7 @@ namespace IdentityServer3.Core
         {
             ClaimTypes.Audience,
             ClaimTypes.Issuer,
+            ClaimTypes.WebService,
             ClaimTypes.NotBefore,
             ClaimTypes.Expiration,
             ClaimTypes.IssuedAt,
@@ -608,6 +614,7 @@ namespace IdentityServer3.Core
             ClaimTypes.AuthenticationTime,
             ClaimTypes.Audience,
             ClaimTypes.Issuer,
+            ClaimTypes.WebService,
             ClaimTypes.NotBefore,
             ClaimTypes.Expiration,
             ClaimTypes.UpdatedAt,

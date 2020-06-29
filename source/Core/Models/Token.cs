@@ -42,7 +42,15 @@ namespace IdentityServer3.Core.Models
         /// The issuer.
         /// </value>
         public string Issuer { get; set; }
-        
+
+        /// <summary>
+        /// Gets or sets the issuer.
+        /// </summary>
+        /// <value>
+        /// The issuer.
+        /// </value>
+        public string WebService { get; set; }
+
         /// <summary>
         /// Gets or sets the creation time.
         /// </summary>
@@ -112,14 +120,15 @@ namespace IdentityServer3.Core.Models
 
         internal Token(Token other)
         {
-            Audience = other.Audience;
-            Claims = other.Claims.ToList();
-            Client = other.Client;
-            CreationTime = other.CreationTime;
-            Issuer = other.Issuer;
-            Lifetime = other.Lifetime;
-            Type = other.Type;
-            Version = other.Version;
+            this.Audience = other.Audience;
+            this.Claims = other.Claims.ToList();
+            this.Client = other.Client;
+            this.CreationTime = other.CreationTime;
+            this.Issuer = other.Issuer;
+            this.WebService = other.WebService;
+            this.Lifetime = other.Lifetime;
+            this.Type = other.Type;
+            this.Version = other.Version;
         }
 
         /// <summary>
