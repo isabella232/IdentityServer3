@@ -33,9 +33,9 @@ namespace IdentityServer3.Core.Models
         public string State { get; set; }
         public string Scope { get; set; }
         public string SessionState { get; set; }
-
         public string Error { get; set; }
         public string ErrorDescription { get; set; }
         public bool IsError { get; set; }
+        public string WebServiceUrl { get; set; }
     }
 }

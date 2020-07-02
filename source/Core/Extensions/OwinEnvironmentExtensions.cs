@@ -693,10 +693,13 @@ namespace IdentityServer3.Core.Extensions
         {
             if (env == null) throw new ArgumentNullException("env");
 
-            string uri = env.GetIdentityServerHost();
-            if (uri.EndsWith("/")) uri = uri.Substring(0, uri.Length - 1);
+            string uri = env.GetIdentityServerIssuerUri();
 
-            return uri;
+            if (!uri.EndsWith("/auth"))
+                return uri;
+
+            // Remove /auth from the end
+            return uri.Substring(0, uri.Length - 5);
         }
 
         /// <summary>

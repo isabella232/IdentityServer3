@@ -247,6 +247,11 @@ namespace IdentityServer3.Core.Models
         public bool AllowAccessTokensViaBrowser { get; set; }
 
         /// <summary>
+        /// Indicates whether WebService URL will be included in refresh token.
+        /// </summary>
+        public bool IncludeWebServiceUrlInRefreshToken { get; set; }
+
+        /// <summary>
         /// Creates a Client with default values
         /// </summary>
         public Client()

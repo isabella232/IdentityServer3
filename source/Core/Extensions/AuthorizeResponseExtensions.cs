@@ -72,6 +72,11 @@ namespace IdentityServer3.Core.Extensions
                 collection.Add("session_state", response.SessionState);
             }
 
+            if (response.WebServiceUrl.IsPresent())
+            {
+                collection.Add("ws_url", response.WebServiceUrl);
+            }
+
             return collection;
         }
     }

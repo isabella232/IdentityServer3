@@ -20,6 +20,7 @@ using IdentityServer3.Core.Logging;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using IdentityServer3.Core.Validation;
+using Microsoft.Owin;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -39,12 +40,14 @@ namespace IdentityServer3.Core.ResponseHandling
         private readonly ITokenService _tokenService;
         private readonly IAuthorizationCodeStore _authorizationCodes;
         private readonly IEventService _events;
+        private readonly OwinContext _context;
 
-        public AuthorizeResponseGenerator(ITokenService tokenService, IAuthorizationCodeStore authorizationCodes, IEventService events)
+        public AuthorizeResponseGenerator(ITokenService tokenService, IAuthorizationCodeStore authorizationCodes, IEventService events, OwinEnvironmentService owinEnvironmentService)
         {
             _tokenService = tokenService;
             _authorizationCodes = authorizationCodes;
             _events = events;
+            _context = new OwinContext(owinEnvironmentService.Environment);
         }
 
         public async Task<AuthorizeResponse> CreateResponseAsync(ValidatedAuthorizeRequest request)
@@ -88,7 +91,8 @@ namespace IdentityServer3.Core.ResponseHandling
                 Request = request,
                 RedirectUri = request.RedirectUri,
                 Code = code,
-                State = request.State
+                State = request.State,
+                WebServiceUrl = _context.GetIdentityServerWebServiceUri()
             };
 
             if (request.IsOpenIdRequest)

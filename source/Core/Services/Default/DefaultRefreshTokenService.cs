@@ -15,10 +15,13 @@
  */
 
 using IdentityModel;
+using IdentityServer3.Core.Events;
 using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Logging;
 using IdentityServer3.Core.Models;
+using Microsoft.Owin;
 using System.Security.Claims;
+using System.Text;
 using System.Threading.Tasks;
 
 namespace IdentityServer3.Core.Services.Default
@@ -44,11 +47,28 @@ namespace IdentityServer3.Core.Services.Default
         protected readonly IEventService _events;
 
         /// <summary>
+        /// The OWIN context
+        /// </summary>
+        protected readonly OwinContext _context;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRefreshTokenService" /> class.
         /// </summary>
         /// <param name="store">The refresh token store.</param>
         /// <param name="events">The events.</param>
-        public DefaultRefreshTokenService(IRefreshTokenStore store, IEventService events)
+        /// <param name="owinEnvironmentService">The events service.</param>
+        public DefaultRefreshTokenService(IRefreshTokenStore store, IEventService events, OwinEnvironmentService owinEnvironmentService)
+            : this(store, events)
+        {
+            _context = new OwinContext(owinEnvironmentService.Environment);
+        }
+
+        /// <summary>
+        /// Constructor for unit tests.
+        /// </summary>
+        /// <param name="store">The refresh token store.</param>
+        /// <param name="events">The events.</param>
+        internal DefaultRefreshTokenService(IRefreshTokenStore store, IEventService events)
         {
             _store = store;
             _events = events;
@@ -79,7 +99,8 @@ namespace IdentityServer3.Core.Services.Default
                 lifetime = client.SlidingRefreshTokenLifetime;
             }
 
-            var handle = CryptoRandom.CreateUniqueId();
+            var handle = this.GenerateRefreshTokenHandle(client);
+
             var refreshToken = new RefreshToken
             {
                 CreationTime = DateTimeOffsetHelper.UtcNow,
@@ -91,6 +112,18 @@ namespace IdentityServer3.Core.Services.Default
             await _store.StoreAsync(handle, refreshToken);
 
             await RaiseRefreshTokenIssuedEventAsync(handle, refreshToken);
+            return handle;
+        }
+
+        private string GenerateRefreshTokenHandle(Client client)
+        {
+            string handle = CryptoRandom.CreateUniqueId();
+
+            if (client.IncludeWebServiceUrlInRefreshToken)
+            {
+                handle = string.Concat(handle, ".", Base64Url.Encode(Encoding.UTF8.GetBytes(_context.GetIdentityServerWebServiceUri())));
+            }
+
             return handle;
         }
 
@@ -118,7 +151,7 @@ namespace IdentityServer3.Core.Services.Default
                 await _store.RemoveAsync(handle);
 
                 // create new one
-                newHandle = CryptoRandom.CreateUniqueId();
+                newHandle = this.GenerateRefreshTokenHandle(client);
                 needsUpdate = true;
             }
 
