@@ -7308,8 +7308,8 @@ td.visible-print {
 
 .spinner-border {
   display: inline-block;
-  width: 2rem;
-  height: 2rem;
+  width: 32px;
+  height: 32px;
   vertical-align: text-bottom;
   border: 0.25em solid currentColor;
   border-right-color: transparent;
@@ -7319,7 +7319,7 @@ td.visible-print {
 }
 
 .spinner-border-sm {
-  width: 1rem;
-  height: 1rem;
+  width: 16px;
+  height: 16px;
   border-width: 0.2em;
 }
