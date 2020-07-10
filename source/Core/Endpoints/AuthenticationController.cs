@@ -1372,6 +1372,11 @@ namespace IdentityServer3.Core.Endpoints
                 ClientLogoUrl = client != null ? client.LogoUri : null
             };
 
+            if (client != null && !client.AllowRememberMe)
+            {
+                loginModel.AllowRememberMe = false;
+            }
+
             return new LoginActionResult(viewService, loginModel, message);
         }
 

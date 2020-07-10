@@ -252,6 +252,15 @@ namespace IdentityServer3.Core.Models
         public bool IncludeWebServiceUrlInRefreshToken { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether the "remember me" option is presented to users on the login page. 
+        /// If selected this option will issue a persistent authentication cookie. Defaults to true.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if allowed; otherwise, <c>false</c>.
+        /// </value>
+        public bool AllowRememberMe { get; set; }
+
+        /// <summary>
         /// Creates a Client with default values
         /// </summary>
         public Client()
@@ -272,6 +281,7 @@ namespace IdentityServer3.Core.Models
             EnableLocalLogin = true;
             AllowAccessToAllScopes = false;
             AllowAccessToAllCustomGrantTypes = false;
+            AllowRememberMe = true;
 
             // client claims settings
             Claims = new List<Claim>();
