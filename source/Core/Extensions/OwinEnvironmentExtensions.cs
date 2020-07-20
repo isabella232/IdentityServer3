@@ -682,7 +682,7 @@ namespace IdentityServer3.Core.Extensions
                 if (uri.EndsWith("/")) uri = uri.Substring(0, uri.Length - 1);
             }
 
-            return uri;
+            return uri.ToLowerInvariant();
         }
 
         /// <summary>
