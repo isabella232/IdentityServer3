@@ -38,13 +38,20 @@ namespace IdentityServer3.Core.Services.Default
         /// <summary>
         /// The user service
         /// </summary>
-        protected readonly IUserService _users;
+        protected readonly IBasicUserService _users;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultClaimsProvider"/> class.
         /// </summary>
         /// <param name="users">The users service</param>
         public DefaultClaimsProvider(IUserService users)
+            : this((IBasicUserService)users) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultClaimsProvider"/> class.
+        /// </summary>
+        /// <param name="users">The users service</param>
+        public DefaultClaimsProvider(IBasicUserService users)
         {
             _users = users;
         }

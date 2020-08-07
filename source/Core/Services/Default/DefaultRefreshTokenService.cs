@@ -20,6 +20,7 @@ using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Logging;
 using IdentityServer3.Core.Models;
 using Microsoft.Owin;
+using System;
 using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
@@ -47,9 +48,9 @@ namespace IdentityServer3.Core.Services.Default
         protected readonly IEventService _events;
 
         /// <summary>
-        /// The OWIN context
+        /// The issuer Uri
         /// </summary>
-        protected readonly OwinContext _context;
+        protected readonly string _issuerUri;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRefreshTokenService" /> class.
@@ -58,9 +59,21 @@ namespace IdentityServer3.Core.Services.Default
         /// <param name="events">The events.</param>
         /// <param name="owinEnvironmentService">The events service.</param>
         public DefaultRefreshTokenService(IRefreshTokenStore store, IEventService events, OwinEnvironmentService owinEnvironmentService)
+            : this(store, events, new OwinContext(owinEnvironmentService.Environment).GetIdentityServerIssuerUri()) { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultRefreshTokenService" /> class.
+        /// </summary>
+        /// <param name="store">The refresh token store.</param>
+        /// <param name="events">The events.</param>
+        /// <param name="issuerUri">The issuer uri.</param>
+        public DefaultRefreshTokenService(IRefreshTokenStore store, IEventService events, string issuerUri)
             : this(store, events)
         {
-            _context = new OwinContext(owinEnvironmentService.Environment);
+            if (string.IsNullOrEmpty(issuerUri))
+                throw new ArgumentNullException("issuerUri");
+
+            _issuerUri = issuerUri;
         }
 
         /// <summary>
@@ -121,7 +134,7 @@ namespace IdentityServer3.Core.Services.Default
 
             if (client.IncludeWebServiceUrlInRefreshToken)
             {
-                handle = string.Concat(handle, ".", Base64Url.Encode(Encoding.UTF8.GetBytes(_context.GetIdentityServerWebServiceUri())));
+                handle = string.Concat(handle, ".", Base64Url.Encode(Encoding.UTF8.GetBytes(_issuerUri)));
             }
 
             return handle;

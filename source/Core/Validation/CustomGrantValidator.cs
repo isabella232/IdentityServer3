@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace IdentityServer3.Core.Validation
 {
-    internal class CustomGrantValidator
+    public class CustomGrantValidator
     {
         private readonly IEnumerable<ICustomGrantValidator> _validators;
         private readonly static ILog Logger = LogProvider.GetCurrentClassLogger();

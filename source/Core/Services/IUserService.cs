@@ -60,12 +60,5 @@ namespace IdentityServer3.Core.Services
         /// <param name="context">The context.</param>
         /// <returns></returns>
         Task SignOutAsync(SignOutContext context);
-
-        /// <summary>
-        /// This method is called whenever claims about the user are requested (e.g. during token creation or via the userinfo endpoint)
-        /// </summary>
-        /// <param name="context">The context.</param>
-        /// <returns></returns>
-        Task GetProfileDataAsync(ProfileDataRequestContext context);
     }
 }

@@ -28,13 +28,13 @@ using System.Threading.Tasks;
 
 namespace IdentityServer3.Core.Validation
 {
-    internal class TokenRequestValidator
+    public class TokenRequestValidator
     {
         private readonly static ILog Logger = LogProvider.GetCurrentClassLogger();
 
         private readonly IdentityServerOptions _options;
         private readonly IAuthorizationCodeStore _authorizationCodes;
-        private readonly IUserService _users;
+        private readonly IBasicUserService _users;
         private readonly CustomGrantValidator _customGrantValidator;
         private readonly ICustomRequestValidator _customRequestValidator;
         private readonly IRefreshTokenStore _refreshTokens;
@@ -51,7 +51,12 @@ namespace IdentityServer3.Core.Validation
             }
         }
 
-        public TokenRequestValidator(IdentityServerOptions options, IAuthorizationCodeStore authorizationCodes, IRefreshTokenStore refreshTokens, IUserService users, CustomGrantValidator customGrantValidator, ICustomRequestValidator customRequestValidator, ScopeValidator scopeValidator, IEventService events)
+        public TokenRequestValidator(IdentityServerOptions options, IAuthorizationCodeStore authorizationCodes, IRefreshTokenStore refreshTokens, IUserService users, CustomGrantValidator customGrantValidator,
+            ICustomRequestValidator customRequestValidator, ScopeValidator scopeValidator, IEventService events)
+        : this(options, authorizationCodes, refreshTokens, (IBasicUserService)users, customGrantValidator, customRequestValidator, scopeValidator, events) { }
+
+        public TokenRequestValidator(IdentityServerOptions options, IAuthorizationCodeStore authorizationCodes, IRefreshTokenStore refreshTokens, IBasicUserService users, CustomGrantValidator customGrantValidator,
+            ICustomRequestValidator customRequestValidator, ScopeValidator scopeValidator, IEventService events)
         {
             _options = options;
             _authorizationCodes = authorizationCodes;
@@ -494,7 +499,10 @@ namespace IdentityServer3.Core.Validation
                 SignInMessage = signInMessage
             };
 
-            await _users.AuthenticateLocalAsync(authenticationContext);
+            if (!(_users is IUserService))
+                throw new InvalidOperationException("Full IUserService is required");
+
+            await ((IUserService)_users).AuthenticateLocalAsync(authenticationContext);
             var authnResult = authenticationContext.AuthenticateResult;
 
             if (authnResult == null || authnResult.IsError || authnResult.IsPartialSignIn)

@@ -695,11 +695,19 @@ namespace IdentityServer3.Core.Extensions
 
             string uri = env.GetIdentityServerIssuerUri();
 
-            if (!uri.EndsWith("/auth"))
-                return uri;
+            return GetWebServiceUriFromIssuerUri(uri);
+        }
+
+        public static string GetWebServiceUriFromIssuerUri(string issuerUri)
+        {
+            if (string.IsNullOrEmpty(issuerUri))
+                throw new ArgumentNullException("issuerUri");
+
+            if (!issuerUri.EndsWith("/auth"))
+                return issuerUri;
 
             // Remove /auth from the end
-            return uri.Substring(0, uri.Length - 5);
+            return issuerUri.Substring(0, issuerUri.Length - 5);
         }
 
         /// <summary>

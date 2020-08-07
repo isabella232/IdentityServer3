@@ -64,11 +64,28 @@ namespace IdentityServer3.Core.Services.Default
         /// The events service
         /// </summary>
         protected readonly IEventService _events;
-        
+
         /// <summary>
-        /// The OWIN context
+        /// The issuer URL
         /// </summary>
-        protected readonly OwinContext _context;
+        protected readonly string _issuerUri;
+
+        /// <summary>
+        /// The web service URL
+        /// </summary>
+        protected readonly string _wsUri;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DefaultTokenService" /> class.
+        /// </summary>
+        /// <param name="options">The options.</param>
+        /// <param name="claimsProvider">The claims provider.</param>
+        /// <param name="tokenHandles">The token handles.</param>
+        /// <param name="signingService">The signing service.</param>
+        /// <param name="events">The events service.</param>
+        /// <param name="owinEnvironmentService">The OWIN environment service.</param>
+        public DefaultTokenService(IdentityServerOptions options, IClaimsProvider claimsProvider, ITokenHandleStore tokenHandles, ITokenSigningService signingService, IEventService events, OwinEnvironmentService owinEnvironmentService)
+            : this(options, claimsProvider, tokenHandles, signingService, events, new OwinContext(owinEnvironmentService.Environment).GetIdentityServerIssuerUri()) { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DefaultTokenService" /> class.
@@ -78,15 +95,16 @@ namespace IdentityServer3.Core.Services.Default
         /// <param name="tokenHandles">The token handles.</param>
         /// <param name="signingService">The signing service.</param>
         /// <param name="events">The OWIN environment service.</param>
-        /// <param name="owinEnvironmentService">The events service.</param>
-        public DefaultTokenService(IdentityServerOptions options, IClaimsProvider claimsProvider, ITokenHandleStore tokenHandles, ITokenSigningService signingService, IEventService events, OwinEnvironmentService owinEnvironmentService)
+        /// <param name="issuerUri">The issuer url.</param>
+        public DefaultTokenService(IdentityServerOptions options, IClaimsProvider claimsProvider, ITokenHandleStore tokenHandles, ITokenSigningService signingService, IEventService events, string issuerUri)
         {
             _options = options;
             _claimsProvider = claimsProvider;
             _tokenHandles = tokenHandles;
             _signingService = signingService;
             _events = events;
-            _context = new OwinContext(owinEnvironmentService.Environment);
+            _issuerUri = issuerUri;
+            _wsUri = OwinEnvironmentExtensions.GetWebServiceUriFromIssuerUri(issuerUri);
         }
 
         /// <summary>
@@ -141,8 +159,8 @@ namespace IdentityServer3.Core.Services.Default
             var token = new Token(Constants.TokenTypes.IdentityToken)
             {
                 Audience = request.Client.ClientId,
-                Issuer = _context.GetIdentityServerIssuerUri(),
-                WebService = _context.GetIdentityServerWebServiceUri(),
+                Issuer = _issuerUri,
+                WebService = _wsUri,
                 Lifetime = request.Client.IdentityTokenLifetime,
                 Claims = claims.Distinct(new ClaimComparer()).ToList(),
                 Client = request.Client
@@ -185,8 +203,8 @@ namespace IdentityServer3.Core.Services.Default
 
         protected Token CreateAccessToken(Client client, List<Claim> claims)
         {
-            string issuerUri = _context.GetIdentityServerIssuerUri();
-            string wsUri = _context.GetIdentityServerWebServiceUri();
+            string issuerUri = _issuerUri;
+            string wsUri = _wsUri;
 
             var token = new Token(Constants.TokenTypes.AccessToken)
             {
