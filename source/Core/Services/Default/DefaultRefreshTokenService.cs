@@ -53,6 +53,11 @@ namespace IdentityServer3.Core.Services.Default
         protected readonly string _issuerUri;
 
         /// <summary>
+        /// The web service URL
+        /// </summary>
+        protected readonly string _wsUri;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DefaultRefreshTokenService" /> class.
         /// </summary>
         /// <param name="store">The refresh token store.</param>
@@ -74,6 +79,7 @@ namespace IdentityServer3.Core.Services.Default
                 throw new ArgumentNullException("issuerUri");
 
             _issuerUri = issuerUri;
+            _wsUri = OwinEnvironmentExtensions.GetWebServiceUriFromIssuerUri(issuerUri);
         }
 
         /// <summary>
@@ -134,7 +140,7 @@ namespace IdentityServer3.Core.Services.Default
 
             if (client.IncludeWebServiceUrlInRefreshToken)
             {
-                handle = string.Concat(handle, ".", Base64Url.Encode(Encoding.UTF8.GetBytes(_issuerUri)));
+                handle = string.Concat(handle, ".", Base64Url.Encode(Encoding.UTF8.GetBytes(_wsUri)));
             }
 
             return handle;
