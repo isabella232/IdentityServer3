@@ -188,7 +188,7 @@ namespace IdentityServer3.Core.Endpoints
 
         [Route(Constants.RoutePaths.ResetPasswordVerify, Name = Constants.RouteNames.ResetPasswordVerify)]
         [HttpGet]
-        public async Task<IHttpActionResult> ResetVerify(string signin = null)
+        public async Task<IHttpActionResult> ResetVerify(string signin = null, string username = null)
         {
             Logger.Info("Reset password verify page requested");
 
@@ -197,7 +197,7 @@ namespace IdentityServer3.Core.Endpoints
             if (!this.ValidateSignin(signin, out errorResult, out signInMessage))
                 return errorResult;
 
-            return await RenderResetPasswordVerifyPage(signInMessage, signin);
+            return await RenderResetPasswordVerifyPage(signInMessage, signin, username: username);
         }
 
         [Route(Constants.RoutePaths.ResetPasswordVerify)]
@@ -382,7 +382,7 @@ namespace IdentityServer3.Core.Endpoints
             await eventService.RaiseResetPasswordSuccessEventAsync(model.Username, signin, signInMessage);
 
             var url = Request.GetOwinContext().GetIdentityServerBaseUrl().EnsureTrailingSlash() +
-                Constants.RoutePaths.ResetPasswordVerify + "?signin=" + signin;
+                Constants.RoutePaths.ResetPasswordVerify + "?signin=" + signin + "&username=" + model.Username;
 
             return Redirect(url);
         }
