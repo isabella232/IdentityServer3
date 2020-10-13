@@ -1105,9 +1105,9 @@ namespace IdentityServer3.Core.Endpoints
                 if (path.StartsWith("~/"))
                 {
                     path = path.Substring(2);
-                    path = Request.GetIdentityServerBaseUrl() + path;
+                    path = this.context.GetIdentityServerBaseUrl() + path;
                 }
-                var host = new Uri(context.GetIdentityServerHost());
+                var host = new Uri(this.context.GetIdentityServerHost());
                 return new Uri(host, path);
             }
             else
@@ -1449,6 +1449,11 @@ namespace IdentityServer3.Core.Endpoints
             if (message != null)
             {
                 redirectUrl = message.ReturnUrl;
+                if (redirectUrl.StartsWith("~/"))
+                {
+                    redirectUrl = System.Web.VirtualPathUtility.ToAbsolute(redirectUrl);
+                }
+
                 clientName = await clientStore.GetClientName(message);
 
                 if (!string.IsNullOrEmpty(message.UiLocales))
