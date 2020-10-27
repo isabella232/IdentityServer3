@@ -1449,7 +1449,7 @@ namespace IdentityServer3.Core.Endpoints
             if (message != null)
             {
                 redirectUrl = message.ReturnUrl;
-                if (redirectUrl.StartsWith("~/"))
+                if (redirectUrl != null && redirectUrl.StartsWith("~/"))
                 {
                     redirectUrl = System.Web.VirtualPathUtility.ToAbsolute(redirectUrl);
                 }
