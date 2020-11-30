@@ -263,7 +263,7 @@ namespace IdentityServer3.Core.Validation
             }
             catch (Exception ex)
             {
-                Logger.InfoException("JWT token validation error", ex);
+                Logger.InfoException($"JWT token validation error, keys tried:{Environment.NewLine}{string.Join(Environment.NewLine, keys.Select(x => x.Certificate.GetPublicKeyString()))}", ex);
                 return Invalid(Constants.ProtectedResourceErrors.InvalidToken);
             }
         }
