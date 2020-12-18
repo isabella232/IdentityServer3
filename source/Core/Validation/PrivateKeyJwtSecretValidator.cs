@@ -15,17 +15,17 @@
  */
 
 using IdentityModel;
-using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Extensions;
 using IdentityServer3.Core.Logging;
 using IdentityServer3.Core.Models;
 using IdentityServer3.Core.Services;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using System.Threading.Tasks;
+using System.IdentityModel.Tokens.Jwt;
 
 namespace IdentityServer3.Core.Validation
 {
@@ -88,8 +88,7 @@ namespace IdentityServer3.Core.Validation
             var tokenValidationParameters = new TokenValidationParameters
             {
                 IssuerSigningKeys = trustedKeys,
-                // Issuer validation is not implemented in System.IdentityModel.Tokens.Jwt 4.X
-                ValidateIssuerSigningKey = false,
+                ValidateIssuerSigningKey = true,
 
                 ValidIssuer = parsedSecret.Id,
                 ValidateIssuer = true,
@@ -103,7 +102,7 @@ namespace IdentityServer3.Core.Validation
             try
             {
                 SecurityToken token;
-                var handler = new EmbeddedCertificateJwtSecurityTokenHandler();
+                var handler = new JwtSecurityTokenHandler();
                 handler.ValidateToken(jwtTokenString, tokenValidationParameters, out token);
 
                 var jwtToken = (JwtSecurityToken)token;

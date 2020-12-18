@@ -14,8 +14,9 @@
  * limitations under the License.
  */
 
+using Newtonsoft.Json.Linq;
 using System;
-using System.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 
@@ -28,8 +29,8 @@ namespace IdentityServer3.Core.Extensions
             object values;
             if (securityToken.Header.TryGetValue(JwtHeaderParameterNames.X5c, out values))
             {
-                var objects = values as object[];
-                var rawCertificate = objects != null ? objects.Cast<string>().FirstOrDefault() : null;
+                JArray objects = values as JArray;
+                var rawCertificate = objects?.FirstOrDefault().Value<string>();
                 if (rawCertificate != null)
                 {
                     return new X509Certificate2(Convert.FromBase64String(rawCertificate));

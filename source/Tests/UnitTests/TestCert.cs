@@ -26,7 +26,7 @@ namespace IdentityServer3.Tests
             var assembly = typeof(TestCert).Assembly;
             using (var stream = assembly.GetManifestResourceStream("IdentityServer3.Tests.idsrv3test.pfx"))
             {
-                return new X509Certificate2(ReadStream(stream), "idsrv3test");
+                return new X509Certificate2(ReadStream(stream), "password");
             }
         }
 

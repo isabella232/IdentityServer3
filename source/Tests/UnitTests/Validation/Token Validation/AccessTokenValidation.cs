@@ -24,7 +24,8 @@ using IdentityServer3.Core.Services.InMemory;
 using Moq;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Threading.Tasks;
 using Xunit;
@@ -39,7 +40,7 @@ namespace IdentityServer3.Tests.Validation.Tokens
 
         static AccessTokenValidation()
         {
-            JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
+            JwtSecurityTokenHandler.DefaultInboundClaimTypeMap.Clear();
         }
 
         DateTimeOffset now;

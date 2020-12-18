@@ -16,7 +16,8 @@
 
 using IdentityServer3.Core.Configuration;
 using IdentityServer3.Core.Models;
-using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 
 namespace IdentityServer3.Core.Services.Default
@@ -108,6 +109,8 @@ namespace IdentityServer3.Core.Services.Default
         private async Task<JwtHeader> CreateHeaderAsync(SigningCredentials credential)
         {
             var header = new JwtHeader(credential);
+            if (header.ContainsKey("kid"))
+                return header;
 
             var x509credential = credential as X509SigningCredentials;
             if (x509credential != null)

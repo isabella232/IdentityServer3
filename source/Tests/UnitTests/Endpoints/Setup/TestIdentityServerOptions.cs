@@ -34,7 +34,7 @@ namespace IdentityServer3.Tests.Endpoints
             var assembly = typeof(TestIdentityServerOptions).Assembly;
             using (var stream = assembly.GetManifestResourceStream("IdentityServer3.Tests.idsrv3test.pfx"))
             {
-                options.SigningCertificate = new X509Certificate2(ReadStream(stream), "idsrv3test");
+                options.SigningCertificate = new X509Certificate2(ReadStream(stream), "password");
             }
 
             return options;

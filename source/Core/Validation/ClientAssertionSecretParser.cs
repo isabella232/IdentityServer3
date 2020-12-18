@@ -21,7 +21,8 @@ using IdentityServer3.Core.Services;
 using Microsoft.Owin;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 
 namespace IdentityServer3.Core.Validation

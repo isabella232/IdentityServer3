@@ -25,7 +25,8 @@ using Microsoft.Owin.Infrastructure;
 using Microsoft.Owin.Logging;
 using System;
 using System.Collections.Generic;
-using System.IdentityModel.Tokens;
+using Microsoft.IdentityModel.Tokens;
+using System.IdentityModel.Tokens.Jwt;
 using System.Threading.Tasks;
 
 namespace Owin
@@ -59,6 +60,7 @@ namespace Owin
         /// </summary>
         /// <param name="app">The application.</param>
         /// <param name="options">The <see cref="IdentityServer3.Core.Configuration.IdentityServerOptions"/>.</param>
+        /// <param name="autofacResolver">The AutofacResolver.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">
         /// app
@@ -71,10 +73,6 @@ namespace Owin
             if (options == null) throw new ArgumentNullException("options");
 
             options.Validate();
-
-            // turn off weird claim mappings for JWTs
-            JwtSecurityTokenHandler.InboundClaimTypeMap = new Dictionary<string, string>();
-            JwtSecurityTokenHandler.OutboundClaimTypeMap = new Dictionary<string, string>();
 
             if (options.RequireSsl)
             {
