@@ -88,7 +88,8 @@ namespace IdentityServer3.Core.Validation
             var tokenValidationParameters = new TokenValidationParameters
             {
                 IssuerSigningKeys = trustedKeys,
-                ValidateIssuerSigningKey = true,
+                // Issuer validation is not implemented in System.IdentityModel.Tokens.Jwt 4.X
+                ValidateIssuerSigningKey = false,
 
                 ValidIssuer = parsedSecret.Id,
                 ValidateIssuer = true,
