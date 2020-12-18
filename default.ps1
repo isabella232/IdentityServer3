@@ -6,7 +6,7 @@ properties {
 	$sln_file = "$src_directory\IdentityServer3.sln"
 	$target_config = "Release"
 	$framework_version = "v4.5"
-	$xunit_path = "$src_directory\packages\xunit.runner.console.2.0.0\tools\xunit.console.exe"
+	$xunit_path = "$src_directory\packages\xunit.runner.console.2.4.1\tools\net452\xunit.console.exe"
 	$ilmerge_path = "$src_directory\packages\ILMerge.3.0.41\tools\net452\ILMerge.exe"
 	$nuget_path = "$base_directory\nuget.exe"
 
@@ -25,7 +25,7 @@ task Clean {
 }
 
 task Compile -depends UpdateVersion {
-	exec { . "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" /nologo /verbosity:q $sln_file /p:Configuration=$target_config /p:TargetFrameworkVersion=v4.5 }
+	exec { . "C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\MSBuild\Current\Bin\MSBuild.exe" /nologo /verbosity:q $sln_file /p:Configuration=$target_config /p:TargetFrameworkVersion=v4.5.2 }
 
 	if ($LastExitCode -ne 0) {
         exit $LastExitCode
