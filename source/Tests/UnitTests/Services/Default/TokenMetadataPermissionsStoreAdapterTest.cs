@@ -75,11 +75,11 @@ namespace IdentityServer3.Tests.Services.Default
 
             var c1 = result.Single(x=>x.ClientId == "client1");
             c1.Subject.Should().Be("sub");
-            c1.Scopes.ShouldAllBeEquivalentTo(new[] { "foo", "bar" });
+            c1.Scopes.Should().BeEquivalentTo(new[] { "foo", "bar" });
 
             var c2 = result.Single(x=>x.ClientId == "client2");
             c2.Subject.Should().Be("sub");
-            c2.Scopes.ShouldAllBeEquivalentTo(new[] { "baz", "quux" });
+            c2.Scopes.Should().BeEquivalentTo(new[] { "baz", "quux" });
         }
 
         [Fact]

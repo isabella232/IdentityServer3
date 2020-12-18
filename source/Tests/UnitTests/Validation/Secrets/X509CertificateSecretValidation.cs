@@ -85,7 +85,7 @@ namespace IdentityServer3.Tests.Validation.Secrets
 
             Func<Task> act = () => _thumbprintValidator.ValidateAsync(client.ClientSecrets, secret);
 
-            act.ShouldThrow<ArgumentException>();
+            act.Should().Throw<ArgumentException>();
         }
     }
 }

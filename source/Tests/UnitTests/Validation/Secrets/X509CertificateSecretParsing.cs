@@ -72,7 +72,7 @@ namespace IdentityServer3.Tests.Validation.Secrets
             secret.Type.Should().Be(Constants.ParsedSecretTypes.X509Certificate);
             secret.Id.Should().Be("client");
             secret.Credential.Should().NotBeNull();
-            secret.Credential.ShouldBeEquivalentTo(cert);
+            secret.Credential.Should().BeEquivalentTo(cert);
         }
     }
 }

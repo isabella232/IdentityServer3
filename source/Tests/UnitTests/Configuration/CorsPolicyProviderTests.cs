@@ -75,7 +75,7 @@ namespace IdentityServer3.Tests.Configuration
         {
             Action act = () => new TestCorsPolicyProvider(null);
 
-            act.ShouldThrow<ArgumentNullException>()
+            act.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("allowedPaths");
         }
 

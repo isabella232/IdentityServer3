@@ -30,7 +30,7 @@ namespace IdentityServer3.Tests.Configuration
         {
             Action act = () => new Registration<object>((object)null);
 
-            act.ShouldThrow<ArgumentNullException>()
+            act.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("instance");
         }
 
@@ -48,7 +48,7 @@ namespace IdentityServer3.Tests.Configuration
         {
             Action act = () => new Registration<object>((Func<IDependencyResolver, object>)null);
 
-            act.ShouldThrow<ArgumentNullException>()
+            act.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("factory");
         }
         
@@ -67,7 +67,7 @@ namespace IdentityServer3.Tests.Configuration
         {
             Action act = () => new Registration<object>((Type)null);
 
-            act.ShouldThrow<ArgumentNullException>()
+            act.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("type");
         }
 

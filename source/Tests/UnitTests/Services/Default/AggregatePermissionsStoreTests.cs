@@ -53,7 +53,7 @@ namespace IdentityServer3.Tests.Services.Default
             var consent = result.First();
             consent.Subject.Should().Be("sub");
             consent.ClientId.Should().Be("client");
-            consent.Scopes.ShouldAllBeEquivalentTo(new [] { "foo", "bar" });
+            consent.Scopes.Should().BeEquivalentTo(new [] { "foo", "bar" });
         }
         
         [Fact]
@@ -67,7 +67,7 @@ namespace IdentityServer3.Tests.Services.Default
             var consent = result.First();
             consent.Subject.Should().Be("sub");
             consent.ClientId.Should().Be("client");
-            consent.Scopes.ShouldAllBeEquivalentTo(new [] { "foo", "bar" });
+            consent.Scopes.Should().BeEquivalentTo(new [] { "foo", "bar" });
         }
         
         [Fact]
@@ -81,7 +81,7 @@ namespace IdentityServer3.Tests.Services.Default
             var consent = result.First();
             consent.Subject.Should().Be("sub");
             consent.ClientId.Should().Be("client");
-            consent.Scopes.ShouldAllBeEquivalentTo(new[] { "foo", "bar", "baz" });
+            consent.Scopes.Should().BeEquivalentTo(new[] { "foo", "bar", "baz" });
         }
 
         [Fact]
@@ -95,7 +95,7 @@ namespace IdentityServer3.Tests.Services.Default
             var consent = result.First();
             consent.Subject.Should().Be("sub");
             consent.ClientId.Should().Be("client");
-            consent.Scopes.ShouldAllBeEquivalentTo(new[] { "foo", "bar", "baz", "quux" });
+            consent.Scopes.Should().BeEquivalentTo(new[] { "foo", "bar", "baz", "quux" });
         }
         
         [Fact]
@@ -117,15 +117,15 @@ namespace IdentityServer3.Tests.Services.Default
 
             var c1 = result.Single(x => x.ClientId == "client1");
             c1.Subject.Should().Be("sub");
-            c1.Scopes.ShouldAllBeEquivalentTo(new[] { "foo1", "bar1" });
+            c1.Scopes.Should().BeEquivalentTo(new[] { "foo1", "bar1" });
 
             var c2 = result.Single(x => x.ClientId == "client2");
             c1.Subject.Should().Be("sub");
-            c2.Scopes.ShouldAllBeEquivalentTo(new[] { "foo1", "bar1", "foo2", "bar2" });
+            c2.Scopes.Should().BeEquivalentTo(new[] { "foo1", "bar1", "foo2", "bar2" });
             
             var c3 = result.Single(x => x.ClientId == "client3");
             c1.Subject.Should().Be("sub");
-            c3.Scopes.ShouldAllBeEquivalentTo(new[] { "foo1", "bar1", "foo2", "bar2", "foo3", "bar3" });
+            c3.Scopes.Should().BeEquivalentTo(new[] { "foo1", "bar1", "foo2", "bar2", "foo3", "bar3" });
         }
 
         [Fact]

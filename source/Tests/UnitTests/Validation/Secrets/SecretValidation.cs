@@ -180,7 +180,7 @@ namespace IdentityServer3.Tests.Validation.Secrets
             
             Func<Task> act = () => _validator.ValidateAsync(secret, client.ClientSecrets);
 
-            act.ShouldThrow<ArgumentException>();
+            act.Should().Throw<ArgumentException>();
         }
     }
 }

@@ -111,7 +111,7 @@ namespace IdentityServer3.Tests.Connect.ResponseHandling
         {
             Func<Task> act = () => subject.ProcessConsentAsync(null, new UserConsent());
 
-            act.ShouldThrow<ArgumentNullException>()
+            act.Should().Throw<ArgumentNullException>()
                 .And.ParamName.Should().Be("request");
         }
         
@@ -142,7 +142,7 @@ namespace IdentityServer3.Tests.Connect.ResponseHandling
 
             Func<Task> act = () => subject.ProcessConsentAsync(request);
 
-            act.ShouldThrow<ArgumentException>()
+            act.Should().Throw<ArgumentException>()
                 .And.Message.Should().Contain("PromptMode");
         }
 
@@ -160,7 +160,7 @@ namespace IdentityServer3.Tests.Connect.ResponseHandling
 
             Func<Task> act = () => subject.ProcessConsentAsync(request);
 
-            act.ShouldThrow<ArgumentException>()
+            act.Should().Throw<ArgumentException>()
                 .And.Message.Should().Contain("PromptMode");
         }
 
