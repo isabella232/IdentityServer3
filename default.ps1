@@ -11,7 +11,7 @@ properties {
 	$nuget_path = "$base_directory\nuget.exe"
 
 	$buildNumber = 0;
-	$version = "2.6.4.0"
+	$version = "2.6.5.0"
 	$preRelease = $null
 }
 
@@ -72,6 +72,7 @@ task ILMerge -depends Compile {
 	New-Item $dist_directory\lib\net45 -Type Directory
 	Invoke-Expression "$ilmerge_path /targetplatform:v4 /internalize /allowDup /target:library /out:$dist_directory\lib\net45\IdentityServer3.dll $input_dlls /keyfile:IdentityServer3.snk"
 	Copy-Item -Path $dist_directory\lib\net45\* -Destination $base_directory\..\eWay-3\Tools\IdentityServer3
+	Copy-Item -Path $output_directory\System.IdentityModel.Tokens.Jwt.dll -Destination $base_directory\..\eWay-3\Tools\IdentityServer3
 }
 
 task CreateNuGetPackage -depends ILMerge {
