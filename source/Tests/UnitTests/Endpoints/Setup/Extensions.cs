@@ -58,7 +58,7 @@ namespace IdentityServer3.Tests.Endpoints
                 foreach (var value in values)
                 {
                     CookieHeaderValue cookie;
-                    if (CookieHeaderValue.TryParse(value, out cookie))
+                    if (CookieHeaderValue.TryParse(value, out cookie) && cookie.Expires != new DateTimeOffset(1970, 1, 1, 0, 0, 0, TimeSpan.Zero))
                     {
                         cookies.AddRange(cookie.Cookies);
                     }
