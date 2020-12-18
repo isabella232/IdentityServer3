@@ -7,7 +7,7 @@ properties {
 	$target_config = "Release"
 	$framework_version = "v4.5"
 	$xunit_path = "$src_directory\packages\xunit.runner.console.2.0.0\tools\xunit.console.exe"
-	$ilmerge_path = "$src_directory\packages\ILMerge.2.14.1208\tools\ILMerge.exe"
+	$ilmerge_path = "$src_directory\packages\ILMerge.3.0.41\tools\net452\ILMerge.exe"
 	$nuget_path = "$base_directory\nuget.exe"
 
 	$buildNumber = 0;
