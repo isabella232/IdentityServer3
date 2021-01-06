@@ -26,6 +26,23 @@ namespace IdentityServer3.Core.Configuration.AppBuilderExtensions
                 Authority = $"https://login.microsoftonline.com/{options.TenantId}",
                 ClientId = options.ClientId,
                 RedirectUri = options.RedirectUri,
+
+                Notifications = new OpenIdConnectAuthenticationNotifications
+                {
+                    RedirectToIdentityProvider = n =>
+                    {
+                        if (n.ProtocolMessage.RequestType == Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectRequestType.Authentication)
+                        {
+                            var signInMessage = n.OwinContext.Environment.GetSignInMessage();
+                            if (signInMessage != null)
+                            {
+                                n.ProtocolMessage.Prompt = signInMessage.PromptMode;
+                            }
+                        }
+
+                        return Task.FromResult(0);
+                    }
+                }
             });
         }
     }

@@ -76,6 +76,12 @@ namespace IdentityServer3.Core.ResponseHandling
                 _signIn.LoginForced = request.LoginForced;
             }
 
+            // pass through prompt
+            if (request.PromptMode.IsPresent())
+            {
+                _signIn.PromptMode = request.PromptMode;
+            }
+
             // process acr values
             var acrValues = request.AuthenticationContextReferenceClasses.Distinct().ToList();
             

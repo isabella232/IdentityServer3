@@ -74,6 +74,14 @@ namespace IdentityServer3.Core.Models
         public bool LoginForced { get; set; }
 
         /// <summary>
+        /// Gets or sets the prompt mode.
+        /// </summary>
+        /// <value>
+        /// The prompt mode.
+        /// </value>
+        public string PromptMode { get; set; }
+
+        /// <summary>
         /// The display mode passed from the authorization request.
         /// </summary>
         /// <value>
