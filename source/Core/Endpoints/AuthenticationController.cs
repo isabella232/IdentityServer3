@@ -375,6 +375,13 @@ namespace IdentityServer3.Core.Endpoints
                 return await RenderResetPasswordPage(signInMessage, signin, resetResult.ErrorMessage, model.Username);
             }
 
+            if (model.Username != resetContext.UserName)
+            {
+                Logger.Info($"Fixing model.Username from '{model.Username}' to '{resetContext.UserName}'");
+
+                model.Username = resetContext.UserName;
+            }
+
             this.lastUserNameCookie.SetValue(model.Username);
 
             Logger.InfoFormat("Reset password finished successfully for user '{0}'", model.Username);
