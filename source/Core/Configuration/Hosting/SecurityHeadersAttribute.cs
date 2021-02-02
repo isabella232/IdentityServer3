@@ -53,7 +53,12 @@ namespace IdentityServer3.Core.Configuration.Hosting
 
                 if (EnableXfo && actionExecutedContext.Request.GetSuppressXfo() == false)
                 {
-                    actionExecutedContext.Response.Headers.Add("X-Frame-Options", "SAMEORIGIN");
+                    var ctx = actionExecutedContext.Request.GetOwinContext();
+                    var options = ctx.ResolveDependency<IdentityServerOptions>();
+                    if (options.EnableXfo)
+                    {
+                        actionExecutedContext.Response.Headers.Add("X-Frame-Options", "sameorigin");
+                    }
                 }
 
                 if (EnableCsp)

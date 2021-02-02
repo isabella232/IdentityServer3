@@ -161,6 +161,11 @@ namespace IdentityServer3.Core.Configuration
         public Action<IAppBuilder, IdentityServerOptions> PluginConfiguration { get; set; }
 
         /// <summary>
+        /// Gets or sets a value indicating whether X-Frame-Options header will be sent.
+        /// </summary>
+        public bool EnableXfo { get; set; } = true;
+
+        /// <summary>
         /// Gets or sets the protocol logout urls.
         /// </summary>
         /// <value>
