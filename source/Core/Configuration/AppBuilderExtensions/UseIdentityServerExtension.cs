@@ -56,6 +56,18 @@ namespace Owin
         }
 
         /// <summary>
+        /// Creates <see cref="AutofacResolver"/> based on <see cref="IdentityServerOptions"/>.
+        /// </summary>
+        /// <param name="options">The <see cref="IdentityServerOptions"/></param>
+        /// <returns></returns>
+        public static AutofacResolver CreateAutofacResolver(this IdentityServerOptions options)
+        {
+            var container = AutofacConfig.Configure(options);
+
+            return new AutofacResolver(container);
+        }
+
+        /// <summary>
         /// Extension method to configure IdentityServer in the hosting application.
         /// </summary>
         /// <param name="app">The application.</param>
