@@ -1,4 +1,6 @@
-﻿using IdentityServer3.Core.Extensions;
+﻿using IdentityModel;
+using IdentityServer3.Core.Extensions;
+using Microsoft.Owin;
 using Microsoft.Owin.Security.OpenIdConnect;
 using Owin;
 using System;
@@ -16,7 +18,7 @@ namespace IdentityServer3.Core.Configuration.AppBuilderExtensions
             if (options == null)
                 throw new ArgumentNullException(nameof(options));
 
-            return app.UseOpenIdConnectAuthentication(new OpenIdConnectAuthenticationOptions
+            var openIdOptions = new OpenIdConnectAuthenticationOptions
             {
                 AuthenticationType = "aad",
                 Caption = "AzureAD",
@@ -34,16 +36,26 @@ namespace IdentityServer3.Core.Configuration.AppBuilderExtensions
                         if (n.ProtocolMessage.RequestType == Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectRequestType.Authentication)
                         {
                             var signInMessage = n.OwinContext.Environment.GetSignInMessage();
+                            string webServiceUrl = n.OwinContext.Environment.GetIdentityServerWebServiceUri();
                             if (signInMessage != null)
                             {
                                 n.ProtocolMessage.Prompt = signInMessage.PromptMode;
+                                n.ProtocolMessage.State = $"{Base64Url.Encode(Encoding.UTF8.GetBytes(webServiceUrl))}.{n.ProtocolMessage.State}";
                             }
                         }
 
                         return Task.FromResult(0);
                     }
                 }
-            });
+            };
+
+
+            if (!string.IsNullOrEmpty(options.CallbackUri))
+            {
+                openIdOptions.CallbackPath = PathString.FromUriComponent(new Uri(options.CallbackUri));
+            }
+
+            return app.UseOpenIdConnectAuthentication(openIdOptions);
         }
     }
 }

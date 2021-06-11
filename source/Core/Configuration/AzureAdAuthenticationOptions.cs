@@ -27,5 +27,10 @@ namespace IdentityServer3.Core.Configuration
         /// Gets or sets the redirect URI.
         /// </summary>
         public string RedirectUri { get; set; }
+
+        /// <summary>
+        /// Gets or sets the callback URI.
+        /// </summary>
+        public string CallbackUri { get; set; }
     }
 }
