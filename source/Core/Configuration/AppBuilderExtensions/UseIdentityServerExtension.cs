@@ -96,6 +96,11 @@ namespace Owin
                 app.SetLoggerFactory(new LibLogKatanaLoggerFactory());
             }
 
+            if (options.LoggingOptions.ShowPII)
+            {
+                Microsoft.IdentityModel.Logging.IdentityModelEventSource.ShowPII = true;
+            }
+
             app.UseEmbeddedFileServer();
 
             app.ConfigureRequestId();

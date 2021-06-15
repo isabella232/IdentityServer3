@@ -63,5 +63,10 @@ namespace IdentityServer3.Core.Configuration
         ///   <c>true</c> if Katana log forwarding is enabled; otherwise, <c>false</c>.
         /// </value>
         public bool EnableKatanaLogging { get; set; }
+
+        /// <summary>
+        /// Flag which indicates whether or not PII is shown in logs. False by default.
+        /// </summary>
+        public bool ShowPII { get; set; }
     }
 }
