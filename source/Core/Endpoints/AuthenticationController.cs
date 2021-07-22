@@ -1298,8 +1298,7 @@ namespace IdentityServer3.Core.Endpoints
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            bool userNameForced;
-            username = GetUserNameForLoginPage(message, username, out userNameForced);
+            username = GetUserNameForLoginPage(message, username);
 
             var isLocalLoginAllowedForClient = await IsLocalLoginAllowedForClient(message);
             var isLocalLoginAllowed = isLocalLoginAllowedForClient && options.AuthenticationOptions.EnableLocalLogin;
@@ -1373,7 +1372,6 @@ namespace IdentityServer3.Core.Endpoints
                 LogoutUrl = context.GetIdentityServerLogoutUrl(),
                 AntiForgery = antiForgeryToken.GetAntiForgeryToken(),
                 Username = username,
-                UsernameReadonly = userNameForced,
                 ClientName = client != null ? client.ClientName : null,
                 ClientUrl = client != null ? client.ClientUri : null,
                 ClientLogoUrl = client != null ? client.LogoUri : null
@@ -1384,26 +1382,23 @@ namespace IdentityServer3.Core.Endpoints
                 loginModel.AllowRememberMe = false;
             }
 
+            if (options.AuthenticationOptions.EnableLoginHint)
+            {
+                loginModel.UsernameReadonly = message.LoginForced == LoginForced.Forced;
+                loginModel.UsernameHidden = message.LoginForced == LoginForced.ForcedHidden;
+            }
+
             return new LoginActionResult(viewService, loginModel, message);
         }
 
         private string GetUserNameForLoginPage(SignInMessage message, string username)
         {
-            bool usernameForced;
-
-            return this.GetUserNameForLoginPage(message, username, out usernameForced);
-        }
-
-        private string GetUserNameForLoginPage(SignInMessage message, string username, out bool usernameForced)
-        {
-            usernameForced = false;
             if (username.IsMissing() && message.LoginHint.IsPresent())
             {
                 if (options.AuthenticationOptions.EnableLoginHint)
                 {
                     Logger.InfoFormat("Using LoginHint for username: {0}", message.LoginHint);
                     username = message.LoginHint;
-                    usernameForced = message.LoginForced;
                 }
                 else
                 {
@@ -1417,6 +1412,7 @@ namespace IdentityServer3.Core.Endpoints
                 Logger.InfoFormat("Using LastUserNameCookie value for username: {0}", lastUsernameCookieValue);
                 username = lastUsernameCookieValue;
             }
+
             return username;
         }
 

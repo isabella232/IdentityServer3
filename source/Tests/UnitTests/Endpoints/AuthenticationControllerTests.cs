@@ -133,6 +133,7 @@ namespace IdentityServer3.Tests.Endpoints
             var model = resp.GetModel<LoginViewModel>();
             model.Username.Should().Be("test");
             model.UsernameReadonly.Should().BeFalse();
+            model.UsernameHidden.Should().BeFalse();
         }
 
         [Fact]

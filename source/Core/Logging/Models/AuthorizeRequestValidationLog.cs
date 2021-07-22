@@ -43,7 +43,7 @@ namespace IdentityServer3.Core.Logging
         public string PromptMode { get; set; }
         public int? MaxAge { get; set; }
         public string LoginHint { get; set; }
-        public bool LoginForced { get; set; }
+        public LoginForced LoginForced { get; set; }
         public string SessionId { get; set; }
         public string CodeChallengeMethod { get; set; }
 

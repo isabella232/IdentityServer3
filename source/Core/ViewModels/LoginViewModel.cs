@@ -46,6 +46,11 @@ namespace IdentityServer3.Core.ViewModels
         public bool UsernameReadonly { get; set; }
 
         /// <summary>
+        /// Value indicating whether user name should be invisible.
+        /// </summary>
+        public bool UsernameHidden { get; set; }
+
+        /// <summary>
         /// List of external providers to display for home realm discover (HRD). 
         /// </summary>
         /// <value>

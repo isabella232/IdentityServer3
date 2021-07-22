@@ -517,14 +517,26 @@ namespace IdentityServer3.Core.Validation
             var loginForced = request.Raw.Get(Constants.AuthorizeRequest.LoginForced);
             if (loginForced.IsPresent())
             {
-                bool loginForcedResult;
-                if (!bool.TryParse(loginForced, out loginForcedResult))
+                switch (loginForced)
                 {
-                    LogError("Unable to parse login_forced", request);
-                    return Invalid(request, ErrorTypes.Client);
-                }
+                    case "true":
+                        request.LoginForced = LoginForced.Forced;
+                        break;
 
-                request.LoginForced = loginForcedResult;
+
+                    case "false":
+                        request.LoginForced = LoginForced.None;
+                        break;
+
+
+                    case "hide":
+                        request.LoginForced = LoginForced.ForcedHidden;
+                        break;
+
+                    default:
+                        LogError("Unable to parse login_forced", request);
+                        return Invalid(request, ErrorTypes.Client);
+                }
             }
 
             //////////////////////////////////////////////////////////

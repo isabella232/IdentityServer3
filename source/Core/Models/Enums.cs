@@ -141,4 +141,25 @@ namespace IdentityServer3.Core.Models
         /// </summary>
         Absolute = 1
     }
+
+    /// <summary>
+    /// LoginForced mode.
+    /// </summary>
+    public enum LoginForced
+    {
+        /// <summary>
+        /// Login hint is not fored.
+        /// </summary>
+        None = 0,
+
+        /// <summary>
+        /// Login hint is forced and readonly.
+        /// </summary>
+        Forced = 1,
+
+        /// <summary>
+        /// Login hint is forced and hidden.
+        /// </summary>
+        ForcedHidden = 2
+    }
 }
