@@ -682,7 +682,8 @@ namespace IdentityServer3.Core
             public const string ResumeLoginFromRedirect = "idsrv.authentication.resume";
             public const string CspReport = "idsrv.csp.report";
             public const string ClientPermissions = "idsrv.permissions";
-            
+            public const string Error = "idsrv.error";
+
             public static class Oidc
             {
                 public const string AccessTokenValidation = "idsrv.oidc.accesstokenvalidation";
@@ -715,6 +716,7 @@ namespace IdentityServer3.Core
             public const string ResumeLoginFromRedirect = "return";
             public const string CspReport = "csp/report";
             public const string ClientPermissions = "permissions";
+            public const string Error = "error";
 
             public static class Oidc
             {

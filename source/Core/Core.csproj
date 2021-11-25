@@ -157,6 +157,7 @@
     <Compile Include="Configuration\X509CertificateDataProtector.cs" />
     <Compile Include="Endpoints\Connect\IntrospectionEndpointController.cs" />
     <Compile Include="Endpoints\Connect\RevocationEndpointController.cs" />
+    <Compile Include="Endpoints\ErrorController.cs" />
     <Compile Include="Endpoints\WelcomeController.cs" />
     <Compile Include="Events\Authentication\ClientAuthenticationDetails.cs" />
     <Compile Include="Events\Authentication\TokenRevokedDetails.cs" />

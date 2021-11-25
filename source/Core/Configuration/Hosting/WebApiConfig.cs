@@ -185,6 +185,11 @@ namespace IdentityServer3.Core.Configuration.Hosting
                     Constants.RoutePaths.Oidc.UserInfo,
                     new { controller = "UserInfoEndpoint" });
             }
+
+            config.Routes.MapHttpRoute(
+                Constants.RouteNames.Error,
+                Constants.RoutePaths.Error,
+                new { controller = "Error", action = "Get" });
         }
 
         private class HttpControllerTypeResolver : IHttpControllerTypeResolver

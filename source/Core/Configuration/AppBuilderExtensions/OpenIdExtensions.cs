@@ -10,6 +10,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static IdentityServer3.Core.Constants;
 
 namespace IdentityServer3.Core.Configuration.AppBuilderExtensions
 {
@@ -33,17 +34,27 @@ namespace IdentityServer3.Core.Configuration.AppBuilderExtensions
 
                 Notifications = new OpenIdConnectAuthenticationNotifications
                 {
-                    RedirectToIdentityProvider = n =>
+                    RedirectToIdentityProvider = notification =>
                     {
-                        if (n.ProtocolMessage.RequestType == Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectRequestType.Authentication)
+                        if (notification.ProtocolMessage.RequestType == Microsoft.IdentityModel.Protocols.OpenIdConnect.OpenIdConnectRequestType.Authentication)
                         {
-                            var signInMessage = n.OwinContext.Environment.GetSignInMessage();
-                            string webServiceUrl = n.OwinContext.Environment.GetIdentityServerWebServiceUri();
+                            var signInMessage = notification.OwinContext.Environment.GetSignInMessage();
+                            string webServiceUrl = notification.OwinContext.Environment.GetIdentityServerWebServiceUri();
                             if (signInMessage != null)
                             {
-                                n.ProtocolMessage.Prompt = signInMessage.PromptMode;
-                                n.ProtocolMessage.State = $"{Base64Url.Encode(Encoding.UTF8.GetBytes(webServiceUrl))}.{n.ProtocolMessage.State}";
+                                notification.ProtocolMessage.Prompt = signInMessage.PromptMode;
+                                notification.ProtocolMessage.State = $"{Base64Url.Encode(Encoding.UTF8.GetBytes(webServiceUrl))}.{notification.ProtocolMessage.State}";
                             }
+                        }
+
+                        return Task.FromResult(0);
+                    },
+                    AuthenticationFailed = notification =>
+                    {
+                        if (string.Equals(notification.ProtocolMessage.Error, AuthorizeErrors.AccessDenied, StringComparison.Ordinal))
+                        {
+                            notification.HandleResponse();
+                            notification.Response.Redirect(notification.OwinContext.Environment.GetIdentityServerBaseUrl() + "error?message=access_denied");
                         }
 
                         return Task.FromResult(0);
