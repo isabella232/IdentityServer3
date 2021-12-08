@@ -28,6 +28,11 @@ namespace IdentityServer3.Core.ViewModels
         /// The password.
         /// </value>
         public string Password { get; set; }
+
+        /// <summary>
+        /// Gets or sets whether external login should be used instead.
+        /// </summary>
+        public string ExternalProvider { get; set; }
         
         /// <summary>
         /// Gets or sets the remember me.

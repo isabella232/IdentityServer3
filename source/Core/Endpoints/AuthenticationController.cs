@@ -482,6 +482,9 @@ namespace IdentityServer3.Core.Endpoints
             
             if (String.IsNullOrWhiteSpace(model.Password))
             {
+                if (!string.IsNullOrWhiteSpace(model.ExternalProvider))
+                    return await LoginExternal(signin, model.ExternalProvider, model.Username);
+
                 ModelState.AddModelError("Password", localizationService.GetMessage(MessageIds.PasswordRequired));
             }
 
@@ -554,7 +557,7 @@ namespace IdentityServer3.Core.Endpoints
 
         [Route(Constants.RoutePaths.LoginExternal, Name = Constants.RouteNames.LoginExternal)]
         [HttpGet]
-        public async Task<IHttpActionResult> LoginExternal(string signin, string provider)
+        public async Task<IHttpActionResult> LoginExternal(string signin, string provider, string loginHint = null)
         {
             Logger.InfoFormat("External login requested for provider: {0}", provider);
 
@@ -601,6 +604,8 @@ namespace IdentityServer3.Core.Endpoints
             // add the id to the dictionary so we can recall the cookie id on the callback
             authProp.Dictionary.Add(Constants.Authentication.SigninId, signin);
             authProp.Dictionary.Add(Constants.Authentication.KatanaAuthenticationType, provider);
+            authProp.Dictionary.Add(Constants.Authentication.LoginHint, loginHint);
+
             context.Authentication.Challenge(authProp, provider);
             
             return Unauthorized();
