@@ -1325,7 +1325,7 @@ namespace IdentityServer3.Core.Endpoints
             else
             {
                 if (isLocalLoginAllowed == false ||
-                    message.LoginForced == LoginForced.Forced || message.LoginForced == LoginForced.ForcedHidden)
+                    (providerLinks.Any() && (message.LoginForced == LoginForced.Forced || message.LoginForced == LoginForced.ForcedHidden)))
                 {
                     if (options.AuthenticationOptions.EnableLocalLogin)
                     {
