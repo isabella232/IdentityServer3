@@ -44,7 +44,13 @@ namespace IdentityServer3.Core.Configuration.AppBuilderExtensions
                             {
                                 notification.ProtocolMessage.Prompt = signInMessage.PromptMode;
                                 notification.ProtocolMessage.State = $"{Base64Url.Encode(Encoding.UTF8.GetBytes(webServiceUrl))}.{notification.ProtocolMessage.State}";
-                                notification.ProtocolMessage.LoginHint = signInMessage.LoginHint ?? notification.OwinContext.Authentication.AuthenticationResponseChallenge.Properties.Dictionary["login_hint"];
+
+                                if (!notification.OwinContext.Authentication.AuthenticationResponseChallenge.Properties.Dictionary.TryGetValue("login_hint", out string loginHint))
+                                {
+                                    loginHint = signInMessage.LoginHint;
+                                }
+
+                                notification.ProtocolMessage.LoginHint = loginHint;
                             }
                         }
 
