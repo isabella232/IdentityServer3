@@ -483,7 +483,11 @@ namespace IdentityServer3.Core.Endpoints
             if (String.IsNullOrWhiteSpace(model.Password))
             {
                 if (!string.IsNullOrWhiteSpace(model.ExternalProvider))
+                {
+                    this.lastUserNameCookie.SetValue(model.Username);
+
                     return await LoginExternal(signin, model.ExternalProvider, model.Username);
+                }
 
                 ModelState.AddModelError("Password", localizationService.GetMessage(MessageIds.PasswordRequired));
             }
@@ -550,7 +554,7 @@ namespace IdentityServer3.Core.Endpoints
 
             await eventService.RaiseLocalLoginSuccessEventAsync(model.Username, signin, signInMessage, authResult);
 
-            lastUserNameCookie.SetValue(model.Username);
+            this.lastUserNameCookie.SetValue(model.Username);
 
             return await SignInAndRedirectAsync(signInMessage, signin, authResult, model.RememberMe);
         }
@@ -1201,7 +1205,7 @@ namespace IdentityServer3.Core.Endpoints
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            username = GetUserNameForLoginPage(message, username);
+            username = GetUserNameForLoginPage(message, username, out _);
 
             var isLocalLoginAllowedForClient = await IsLocalLoginAllowedForClient(message);
             var isLocalLoginAllowed = isLocalLoginAllowedForClient && options.AuthenticationOptions.EnableLocalLogin;
@@ -1254,7 +1258,7 @@ namespace IdentityServer3.Core.Endpoints
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            username = GetUserNameForLoginPage(message, username);
+            username = GetUserNameForLoginPage(message, username, out _);
 
             var isLocalLoginAllowedForClient = await IsLocalLoginAllowedForClient(message);
             var isLocalLoginAllowed = isLocalLoginAllowedForClient && options.AuthenticationOptions.EnableLocalLogin;
@@ -1307,7 +1311,7 @@ namespace IdentityServer3.Core.Endpoints
         {
             if (message == null) throw new ArgumentNullException("message");
 
-            username = GetUserNameForLoginPage(message, username);
+            username = GetUserNameForLoginPage(message, username, out bool isUserNameFromCookie);
 
             var isLocalLoginAllowedForClient = await IsLocalLoginAllowedForClient(message);
             var isLocalLoginAllowed = isLocalLoginAllowedForClient && options.AuthenticationOptions.EnableLocalLogin;
@@ -1325,7 +1329,7 @@ namespace IdentityServer3.Core.Endpoints
             else
             {
                 if (isLocalLoginAllowed == false ||
-                    (providerLinks.Any() && (message.LoginForced == LoginForced.Forced || message.LoginForced == LoginForced.ForcedHidden)))
+                    (providerLinks.Any() && (message.LoginForced == LoginForced.Forced || message.LoginForced == LoginForced.ForcedHidden || isUserNameFromCookie)))
                 {
                     if (options.AuthenticationOptions.EnableLocalLogin)
                     {
@@ -1336,7 +1340,7 @@ namespace IdentityServer3.Core.Endpoints
                         Logger.Info("local login disabled for the client");
                     }
 
-                    string url = null;
+                    string providerType = null;
 
                     if (!providerLinks.Any())
                     {
@@ -1346,18 +1350,19 @@ namespace IdentityServer3.Core.Endpoints
                     else if (providerLinks.Count() == 1)
                     {
                         Logger.Info("only one provider for client");
-                        url = providerLinks.First().Href;
+                        providerType = providerLinks.First().Type;
                     }
                     else if (visibleLinks.Count() == 1)
                     {
                         Logger.Info("only one visible provider");
-                        url = visibleLinks.First().Href;
+                        providerType = visibleLinks.First().Type;
                     }
 
-                    if (url.IsPresent())
+                    if (providerType.IsPresent())
                     {
-                        Logger.InfoFormat("redirecting to provider URL: {0}", url);
-                        return Redirect(url);
+                        Logger.InfoFormat("redirecting to provider: {0}", providerType);
+
+                        return await LoginExternal(signInMessageId, providerType, username);
                     }
                 }
 
@@ -1401,8 +1406,10 @@ namespace IdentityServer3.Core.Endpoints
             return new LoginActionResult(viewService, loginModel, message);
         }
 
-        private string GetUserNameForLoginPage(SignInMessage message, string username)
+        private string GetUserNameForLoginPage(SignInMessage message, string username, out bool isFromCookie)
         {
+            isFromCookie = false;
+
             if (username.IsMissing() && message.LoginHint.IsPresent())
             {
                 if (options.AuthenticationOptions.EnableLoginHint)
@@ -1416,11 +1423,12 @@ namespace IdentityServer3.Core.Endpoints
                 }
             }
 
-            var lastUsernameCookieValue = lastUserNameCookie.GetValue();
+            var lastUsernameCookieValue = this.lastUserNameCookie.GetValue();
             if (username.IsMissing() && lastUsernameCookieValue.IsPresent())
             {
                 Logger.InfoFormat("Using LastUserNameCookie value for username: {0}", lastUsernameCookieValue);
                 username = lastUsernameCookieValue;
+                isFromCookie = true;
             }
 
             return username;
