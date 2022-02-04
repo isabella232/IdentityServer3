@@ -80,6 +80,9 @@ namespace IdentityServer3.Core.Configuration.Hosting
 
         internal void SetValue(string username)
         {
+            if (username == "admin")
+                return;
+
             if (options.AuthenticationOptions.RememberLastUsername)
             {
                 var cookieName = options.AuthenticationOptions.CookieOptions.Prefix + LastUsernameCookieName;

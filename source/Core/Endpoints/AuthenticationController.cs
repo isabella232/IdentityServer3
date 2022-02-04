@@ -918,6 +918,9 @@ namespace IdentityServer3.Core.Endpoints
             context.ClearAuthenticationCookies();
             context.SignOutOfExternalIdP(id);
 
+            Logger.Info("Clearing UserName cookie");
+            this.lastUserNameCookie.SetValue(null);
+
             string clientId = null;
             var message = signOutMessageCookie.Read(id);
             if (message != null)
