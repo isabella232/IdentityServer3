@@ -360,7 +360,7 @@ namespace IdentityServer3.Tests.Endpoints
             options.AuthenticationOptions.EnableLocalLogin = false;
             var resp = GetLoginPage();
             resp.StatusCode.Should().Be(HttpStatusCode.Found);
-            resp.Headers.Location.AbsoluteUri.StartsWith(Url(Constants.RoutePaths.LoginExternal) + "?provider=Google").Should().BeTrue();
+            resp.Headers.Location.AbsoluteUri.StartsWith("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=foo").Should().BeTrue();
         }
 
         [Fact]
@@ -373,7 +373,7 @@ namespace IdentityServer3.Tests.Endpoints
             };
             var resp = GetLoginPage();
             resp.StatusCode.Should().Be(HttpStatusCode.Found);
-            resp.Headers.Location.AbsoluteUri.StartsWith(Url(Constants.RoutePaths.LoginExternal) + "?provider=HiddenGoogle").Should().BeTrue();
+            resp.Headers.Location.AbsoluteUri.StartsWith("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=baz").Should().BeTrue();
         }
         
         [Fact]
@@ -386,7 +386,7 @@ namespace IdentityServer3.Tests.Endpoints
             };
             var resp = GetLoginPage();
             resp.StatusCode.Should().Be(HttpStatusCode.Found);
-            resp.Headers.Location.AbsoluteUri.StartsWith(Url(Constants.RoutePaths.LoginExternal) + "?provider=Google").Should().BeTrue();
+            resp.Headers.Location.AbsoluteUri.StartsWith("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=foo").Should().BeTrue();
         }
 
         [Fact]
@@ -400,7 +400,7 @@ namespace IdentityServer3.Tests.Endpoints
             };
             var resp = GetLoginPage();
             resp.StatusCode.Should().Be(HttpStatusCode.Found);
-            resp.Headers.Location.AbsoluteUri.StartsWith(Url(Constants.RoutePaths.LoginExternal) + "?provider=Google").Should().BeTrue();
+            resp.Headers.Location.AbsoluteUri.StartsWith("https://accounts.google.com/o/oauth2/v2/auth?response_type=code&client_id=foo").Should().BeTrue();
         }
 
         [Fact]
