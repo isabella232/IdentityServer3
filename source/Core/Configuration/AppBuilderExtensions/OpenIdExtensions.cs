@@ -28,7 +28,7 @@ namespace IdentityServer3.Core.Configuration.AppBuilderExtensions
                 Scope = "openid profile",
                 SignInAsAuthenticationType = options.SignInAsAuthenticationType,
 
-                Authority = $"https://login.microsoftonline.com/{options.TenantId}",
+                Authority = $"https://login.microsoftonline.com/{options.TenantId}/v2.0",
                 ClientId = options.ClientId,
                 RedirectUri = options.RedirectUri,
 
